@@ -1,0 +1,7 @@
+<div class="empty-space"></div>
+<div class="empty-space"></div>
+<div class="empty-space"></div>
+<h4> Current tracks </h4>
+	<% @tracks.each do |track| %>
+	  <h3> <%= track.permalink_url %></h3>
+	<% end %>

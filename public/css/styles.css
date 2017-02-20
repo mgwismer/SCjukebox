@@ -1,0 +1,97 @@
+body {
+  height: 100%;
+  font-family: cursive; }
+
+.nav {
+  background-color: rgba(220, 20, 60, 0.5);
+  width: 100%;
+  position: fixed;
+  box-sizing: border-box;
+  z-index: 100;
+  font-family: cursive; }
+
+.nav ul {
+  list-style-type: none;
+  margin-bottom: 0px;
+  text-decoration: none;
+  color: white; }
+
+.nav li:first-child {
+  margin-left: 20px;
+  font-family: cursive;
+  font-size: 2.5em;
+  display: inline-block;
+  opacity: .7; }
+
+.nav li {
+  display: inline-block;
+  margin-left: 40px;
+  cursor: pointer; }
+
+.nav li a {
+  color: white;
+  text-decoration: none;
+  background-color: inherit;
+  opacity: .7; }
+
+.nav li:hover {
+  opacity: 1; }
+
+.nav li:focus {
+  outline: none; }
+
+.nav li a:hover {
+  opacity: 1; }
+
+.empty-space {
+  height: 60px; }
+
+.home-container {
+  font-family: "Trebuchet MS";
+  width: 900px;
+  margin: 0 auto; }
+
+.h1-container {
+  width: 800px;
+  margin: 0 auto; }
+
+.user-h1 {
+  font-family: "Trebuchet MS";
+  text-align: center;
+  font-size: 2em; }
+
+.post-container {
+  font-family: "Trebuchet MS";
+  font-size: 1em;
+  width: 800px;
+  margin: 0 auto; }
+
+.personal-cont {
+  padding: 20px; }
+
+.remove-cont {
+  position: relative;
+  left: 20px;
+  color: black; }
+
+.main-delete-btn {
+  position: relative;
+  top: 20px;
+  color: black; }
+
+.login-cont {
+  font-family: "Trebuchet MS";
+  width: 900px;
+  margin: 0 auto; }
+
+.signup-cont {
+  font-family: "Trebuchet MS";
+  width: 900px;
+  margin: 0 auto; }
+
+.allposts-cont {
+  font-family: "Trebuchet MS";
+  width: 900px;
+  margin: 0 auto; }
+
+/*# sourceMappingURL=styles.css.map */
