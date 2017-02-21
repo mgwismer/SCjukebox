@@ -19,3 +19,8 @@ get '/tracks' do
 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']	
    erb :home
 end
+
+get '/home' do
+	puts "These are my params"
+	puts params.inspect
+end
