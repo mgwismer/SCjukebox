@@ -10,12 +10,12 @@ client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
 # end
 get '/' do 
     # get newest tracks
-		@tracks = client.get('/tracks', :limit => 10)	
-		erb :home
+    "Hello World"
 end
 
 #goto the login page
 get '/tracks' do
-	 @tracks = client.get('/tracks', :limit => 10)	
+	 @tracks = client.get('/tracks', :limit => 10)
+	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']	
    erb :home
 end
