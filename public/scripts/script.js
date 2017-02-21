@@ -11,6 +11,12 @@ $(document).ready(function() {
 	 		currSong.pause() });
 
   }
+
+  function searchSong() {
+  	$(".search-btn").click(function() {
+
+  	})
+  }
   function setBodyColor(color) {
     document.getElementsByTagName('body')[0].style.backgroundColor = '#'+picker.toString();
   }

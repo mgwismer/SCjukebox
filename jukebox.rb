@@ -24,3 +24,13 @@ get '/home' do
 	puts "These are my params"
 	puts params.inspect
 end
+
+get '/search' do
+	erb :search
+end
+
+post '/searchcloud' do
+	keyword = params['keyword']
+	@tracks = client.get('/tracks',{q: keyword})
+	erb :results
+end
