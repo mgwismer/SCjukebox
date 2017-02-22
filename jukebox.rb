@@ -34,3 +34,11 @@ post '/searchcloud' do
 	@tracks = client.get('/tracks',{q: keyword})
 	erb :results
 end
+
+post '/addsong' do
+	puts params.keys[0]
+	newstream = params.keys[0].dup
+	puts newstream
+	@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
+	erb :home
+end

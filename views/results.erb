@@ -1,5 +1,13 @@
 <h4> Searched for tracks</h4>
 
 <% @tracks.each do |track| %>
-	<%= track.permalink_url %> <br>
+	<%= track.title %> <br>
 <% end %>
+
+<form method="POST" action="/addsong">
+  <% @tracks.each do |track| %>
+  <input type="radio" name=<%= track.stream_url %> value=<%= track.title %>> <%= track.title %> <br>
+  <% end %>
+	<input type="submit" value="SUBMIT">
+</form>
+
