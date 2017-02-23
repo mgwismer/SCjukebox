@@ -10,12 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170223155843) do
+ActiveRecord::Schema.define(version: 20170223182558) do
+
+  create_table "colors", force: :cascade do |t|
+    t.string   "boxColor"
+    t.string   "bodyColor"
+    t.string   "btnColor"
+    t.string   "fontColor"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.string  "title"
+    t.integer "user_id"
+  end
+
+  create_table "comments_songs", force: :cascade do |t|
+    t.integer "comment_id"
+    t.integer "song_id"
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.string   "title"
+    t.string   "artwork"
+    t.string   "artist"
+    t.string   "url_track"
+    t.integer  "rating"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
+    t.string "username"
     t.string "email"
     t.text   "password"
+    t.text   "bio"
   end
 
 end

@@ -1,10 +1,8 @@
 class CreateCommentsTable < ActiveRecord::Migration[5.0]
   def change
-  	 create_table :users do |t|
-  		t.string :username
-  		t.string :email
-  		t.text :password
-  		t.text :bio
+  	 create_table :comments do |t|
+  	 	t.string :title
+  		t.integer :user_id
   	end
   end
 end
