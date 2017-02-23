@@ -1,5 +1,10 @@
 require 'sinatra'
+require 'sinatra/activerecord'
+require 'sinatra/flash'
 require 'SoundCloud'
+require './models.rb'
+
+set :database, "sqlite3:test.sqlite3"
 
 # register a client with YOUR_CLIENT_ID as client_id_
 client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
