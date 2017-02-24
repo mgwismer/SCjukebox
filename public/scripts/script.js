@@ -13,32 +13,6 @@ $(document).ready(function() {
 	 		currSong.pause() });
   }
 
-  //Creates the list of songs with buttons 
-  createList = function(respList) {
-    $("#searchlist-div").css("visibility","visible");
-    console.log("in createList "+respList.length);
-	  for (var i = 0; i < respList.length; i++) {
-	     form0 = document.forms[1]
-          .appendChild(document.createElement("input"));
-       form0.className = "select-btn";
-       form0.type = "button";
-       form0.value = respList[i].title;
-       console.log(i+"form value")
-       console.log(form0.value);
-       $(form0).click(function(){
-          var j = $(this).index();
-          addTrack = respList[j].stream_url;
-          addName = respList[j].title;
-          $(".Song-mp3").attr("src",addTrack+"?client_id=fd4e76fc67798bfa742089ed619084a6");
-       })
-	   } //end for loop
-  }// end createList
-
-  function searchSong() {
-  	$(".search-btn").click(function() {
-
-  	})
-  }
   function setBodyColor(color) {
     document.getElementsByTagName('body')[0].style.backgroundColor = '#'+picker.toString();
   }
@@ -49,4 +23,8 @@ $(document).ready(function() {
     document.getElementsByTagName('body')[0].style.color = '#'+picker.toString();
   } 
   controlSong();
+  var canvas = document.querySelector("canvas");
+  var context = canvas.getContext("2d");
+  context.fillStyle = "red";
+  context.fillRect(10, 10, 100, 50);
 });
