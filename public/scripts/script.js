@@ -1,5 +1,6 @@
 $(document).ready(function() {
-
+  
+  var pi = 3.14159;
   //plays are pause whatever is the src for the current song. currently the 
   //audio tags is on the home.erb and the src is set with embedded ruby.
   function controlSong() {	   
@@ -23,8 +24,31 @@ $(document).ready(function() {
     document.getElementsByTagName('body')[0].style.color = '#'+picker.toString();
   } 
   controlSong();
-  var canvas = document.querySelector("canvas");
-  var context = canvas.getContext("2d");
-  context.fillStyle = "red";
-  context.fillRect(10, 10, 100, 50);
+var cvs = document.getElementsByTagName("canvas")[0];
+var ctx = cvs.getContext("2d");
+ctx.strokeStyle="black";
+ctx.fillStyle="white";
+
+function drawLine(x1,y1,x2,y2,ratio) {
+  ctx.fillRect(0,0,300,300);
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+}
+
+function animate(x1,y1,x2,y2,ratio) {
+  ratio = ratio || 0;
+  x1 = x1 + ratio*(300-x1);
+  y1 = 50+50*Math.sin(2*pi*x1/300);
+  x2 = x1 + ratio*(300-x1);
+  y2 = 50+50*Math.sin(2*pi*x2/300);
+  drawLine(x1,y1,x2,y2,ratio);
+  if(ratio<1) {
+    requestAnimationFrame(function() {
+      animate(x1,y1,x2,y2,ratio + 0.001);
+    });
+  }
+}
+
+animate(0,0,100,100,0);
 });
