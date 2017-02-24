@@ -1,10 +1,9 @@
+<div class="empty-space"></div>
+<div class="empty-space"></div>
+<div class="empty-space"></div>
 <h4> Searched for tracks</h4>
 
-<% @tracks.each do |track| %>
-	<%= track.title %> <br>
-<% end %>
-
-<form method="POST" action="/addsong">
+<form method="GET" action="/addsong">
   <% @tracks.each do |track| %>
   <input type="radio" name=<%= track.stream_url %> value=<%= track.title %>> <%= track.title %> <br>
   <% end %>

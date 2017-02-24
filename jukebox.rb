@@ -5,6 +5,8 @@ require 'SoundCloud'
 require './models.rb'
 
 set :database, "sqlite3:test.sqlite3"
+enable :sessions
+initColor = {boxColor: "000000", bodyColor: "FFFFFF", btnColor: "000000"}
 
 # register a client with YOUR_CLIENT_ID as client_id_
 client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
@@ -14,8 +16,7 @@ client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
 #   puts track.permalink_url
 # end
 get '/' do 
-    # get newest tracks
-    "Hello World"
+	erb :home
 end
 
 #goto the login page
@@ -34,13 +35,61 @@ get '/search' do
 	erb :search
 end
 
+#goto the sign up page
+get '/signup' do
+   erb :signup
+end
+
+#goto the login page
+get '/loginpage' do
+   erb :loginpage
+end
+
+post '/login' do
+  @user = User.where(email: params['email']).first
+  if @user && (@user.password == params['password'])
+    session[:user_id] = @user.id
+    flash[:notice] = "You got it, you're so  in"
+    redirect "/user/#{session[:user_id]}"
+  else 
+    flash[:alert] = "Nope, try again"
+    redirect '/loginpage'
+  end
+end
+
+get '/logout' do
+  if (session[:user_id])
+    session[:user_id] = nil 
+    erb :loginpage
+  else
+    erb :loginpage
+  end
+end
+
 post '/searchcloud' do
 	keyword = params['keyword']
 	@tracks = client.get('/tracks',{q: keyword})
 	erb :results
 end
 
-post '/addsong' do
+post '/users/create' do
+  @user= User.new(params)
+  @user.save
+  #default colors
+  @color = Color.new(initColor)
+  @color.user_id = @user.id
+  @color.save
+  redirect "/user/#{@user.id}"
+end
+
+get '/user/:id' do
+   @users = User.all
+   @user = User.find(params["id"])
+   @colors = Color.find_by(user_id: @user.id)
+   erb :user
+end
+
+get '/addsong' do
 	puts params.keys[0]
 	newstream = params.keys[0].dup
 	puts newstream
