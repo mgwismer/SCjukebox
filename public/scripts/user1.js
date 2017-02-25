@@ -15,15 +15,24 @@ $(document).ready(function(){
 	  // we probably also want a ctx.closePath()
 	}
 
-	function animate(ratio) {
+	function animate(x1,y1,x2,y2,ratio) {
 	  ratio = ratio || 0;
-	  drawLine(0,0,300,300,ratio);
+	  drawLine(x1,y1,x2,y2,ratio);
 	  if(ratio<1) {
 	    requestAnimationFrame(function() {
-	      animate(ratio + 0.01);
+	      animate(x1,y1,x2,y2,ratio + 0.01);
 	    });
 	  }
 	}
-	animate();
-	console.log("END ANIMATE");
+
+	function makeBox(startX, startY, height, width) {
+		var endX = startX + width;
+		var endY = startY + height;
+		animate(startX,startY,startX,endY,0);
+		animate(startX,endY,endX,endY,0);
+		animate(endX,endY,endX,startY,0);
+		animate(endX,startY,startX,startY,0);
+		console.log("END ANIMATE");
+	}
+	makeBox(10,10,400,450);
 });
