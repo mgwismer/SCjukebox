@@ -16,6 +16,8 @@ client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
 #   puts track.permalink_url
 # end
 get '/' do 
+	 @tracks = client.get('/tracks', :limit => 10)
+	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	erb :home
 end
 

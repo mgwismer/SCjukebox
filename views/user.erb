@@ -1,7 +1,17 @@
+<script type="text/javascript" src="/scripts/user1.js"></script>
+<script type="text/javascript" src="/scripts/script.js">
+</script>
 <div class="empty-space"></div>
 <div class="empty-space"></div>
 <div class="h1-container">
   <h1 class="user-h1" id="userH1"><%= @user.username %>'s  Page</h1>
+</div>
+<div id="boomBoxCont">
+  <canvas id="boomBoxCanvas" width="500" height="500"></canvas>
+  <div id="controlBtns">
+   <input type="button" name="play" class="ctrl-btn play-btn" value="PLAY">
+   <input type="button" name="pause" class="ctrl-btn pause-btn" value="PAUSE">
+  </div>
 </div>
 <div class="post-container">
   <% @user.songs.each do |song| %>
