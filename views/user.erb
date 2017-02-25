@@ -1,80 +1,86 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script type="text/javascript" src="/scripts/user1.js"></script>
 <script type="text/javascript" src="/scripts/script.js">
 </script>
-<div class="empty-space"></div>
-<div class="empty-space"></div>
-<div class="h1-container">
-  <h1 class="user-h1" id="userH1"><%= @user.username %>'s  Page</h1>
-</div>
-<div id="boomBoxCont">
-  <canvas id="boomBoxCanvas" width="500" height="500"></canvas>
-  <div id="controlBtns">
-   <input type="button" name="play" class="ctrl-btn play-btn" value="PLAY">
-   <input type="button" name="pause" class="ctrl-btn pause-btn" value="PAUSE">
+<div class="container-fluid">
+  <div class="empty-space"></div>
+  <div class="empty-space"></div>
+  <div class="h1-container">
+    <h1 class="user-h1" id="userH1"><%= @user.username %>'s  Page</h1>
   </div>
-</div>
-<div class="post-container">
-  <% @user.songs.each do |song| %>
-  <div class="song-div row">
-    <div class="title-div col-md-4">
-      <h3> <%= song.title %></h3>
-    </div>
-    <div class="deletepost-div col-md-2">
-      <input type="button" value="delete"
-          class="main-delete-btn"> 
-    </div>
-  </div> 
-  <p> <%= song.rating %> </p>
-   <!-- Modal -->
-  <div id="delete-modal" class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">REMOVE POST</h4>
-        </div>
-        <div class="modal-body"> 
-          <p>  Change your mind about a recent post (or not so recent post?)</p> 
-        </div> 
-        <div class="modal-footer row"> 
-          <div class="close-btn col-md-1">
-            <input type="button" value="CANCEL" class="cancel-btn">
-          </div>
-          <div class="delete-form col-md-offset-8 col-md-3">
-            <form method="POST" action="/posts/<%= post.id %>/delete">
-              <input type="submit" value="delete already"
-              class="delete-btn">
-            </form> 
-          </div>
-        </div>
-      </div>   
+  <div class="row">
+    <div class="col-xs-2"></div>
+    <div class="col-xs-8" id="boomBoxCont">
+      <canvas id="boomBoxCanvas" width="500" height="500"></canvas>
+      <div id="controlBtns">
+       <input type="button" name="play" class="ctrl-btn play-btn" value="PLAY">
+       <input type="button" name="pause" class="ctrl-btn pause-btn" value="PAUSE">
+      </div>
     </div>
   </div>
-  <% end %>
-</div>
+  <div class="post-container">
+    <% @user.songs.each do |song| %>
+    <div class="song-div row">
+      <div class="title-div col-md-4">
+        <h3> <%= song.title %></h3>
+      </div>
+      <div class="deletepost-div col-md-2">
+        <input type="button" value="delete"
+            class="main-delete-btn"> 
+      </div>
+    </div> 
+    <p> <%= song.rating %> </p>
+     <!-- Modal -->
+    <div id="delete-modal" class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">REMOVE POST</h4>
+          </div>
+          <div class="modal-body"> 
+            <p>  Change your mind about a recent post (or not so recent post?)</p> 
+          </div> 
+          <div class="modal-footer row"> 
+            <div class="close-btn col-md-1">
+              <input type="button" value="CANCEL" class="cancel-btn">
+            </div>
+            <div class="delete-form col-md-offset-8 col-md-3">
+              <form method="POST" action="/posts/<%= post.id %>/delete">
+                <input type="submit" value="delete already"
+                class="delete-btn">
+              </form> 
+            </div>
+          </div>
+        </div>   
+      </div>
+    </div>
+    <% end %>
+  </div>
 
-<div class="personal-cont row">
-  <div class="idea-cont col-md-4">
-    <h3>a New Idea </h3>
-    <form method="POST" action="/posts/create/<%= @user.id %>">
-      <div>
-        <label for="title"> Title</label>
-        <input type="text" name="title">
-      </div>
-      <div>
-       <label for="content"> Content</label>
-       <textarea name="content"> </textarea>
-      </div>
-      <input type="submit" value="submit">
+  <div class="personal-cont row">
+    <div class="idea-cont col-md-4">
+      <h3>a New Idea </h3>
+      <form method="POST" action="/posts/create/<%= @user.id %>">
+        <div>
+          <label for="title"> Title</label>
+          <input type="text" name="title">
+        </div>
+        <div>
+         <label for="content"> Content</label>
+         <textarea name="content"> </textarea>
+        </div>
+        <input type="submit" value="submit">
+      </form>
+    </div>
+  </div>
+  <div class="empty-space"></div>
+  <div class="empty-space"></div>
+  <div class="remove-cont">
+    <h3>or Remove me </h3>
+    <form method="POST" action="/users/<%= @user.id %>/delete">
+      <input type="submit" value="I want to be freed from your silly app">
     </form>
   </div>
-</div>
-<div class="empty-space"></div>
-<div class="empty-space"></div>
-<div class="remove-cont">
-  <h3>or Remove me </h3>
-  <form method="POST" action="/users/<%= @user.id %>/delete">
-    <input type="submit" value="I want to be freed from your silly app">
-  </form>
 </div>
 <!--   <script>
   function setBodyColor(picker) {
