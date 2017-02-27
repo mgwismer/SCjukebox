@@ -15,15 +15,61 @@ $(document).ready(function(){
 	  // we probably also want a ctx.closePath()
 	}
 
-	function animate(ratio) {
+	function animate(x1,y1,x2,y2,ratio) {
 	  ratio = ratio || 0;
-	  drawLine(0,0,300,300,ratio);
+	  drawLine(x1,y1,x2,y2,ratio);
 	  if(ratio<1) {
 	    requestAnimationFrame(function() {
-	      animate(ratio + 0.01);
+	      animate(x1,y1,x2,y2,ratio + 0.01);
 	    });
 	  }
 	}
-	animate();
-	console.log("END ANIMATE");
+
+	function makeBox(startX, startY, height, width){
+	  var d = $.Deferred();
+		var endX = startX + width;
+		var endY = startY + height;
+		animate(startX,startY,startX,endY,0);
+		animate(startX,endY,endX,endY,0);
+		animate(endX,endY,endX,startY,0);
+		animate(endX,startY,startX,startY,0);
+	  setTimeout(function() {
+	    console.log('1');
+	    d.resolve();
+	  }, 2000);
+	  return d.promise();
+	}
+
+	function makeAntennae(){
+	  var d = $.Deferred();
+		animate(150,100,70,20);
+		animate(200,100,280,20);
+	  setTimeout(function() {
+	    console.log('2');
+	    d.resolve();
+	  }, 1000);
+	  return d.promise();
+	}
+	// function makeBox(startX, startY, height, width,callback) {
+	// 	var endX = startX + width;
+	// 	var endY = startY + height;
+	// 	animate(startX,startY,startX,endY,0);
+	// 	animate(startX,endY,endX,endY,0);
+	// 	animate(endX,endY,endX,startY,0);
+	// 	animate(endX,startY,startX,startY,0);
+	// 	if (typeof callback === 'function') {
+	// 		callback();
+	// 	}
+	// }
+
+	// function makeAntennae() {
+	// 	animate(150,100,70,20);
+	// 	animate(200,100,280,20);
+	// }  
+
+	//should execute makeBox before makeAntennae
+	// $.when(makeBox(10,100,200,450)).then(makeAntennae());
+	makeBox(10,100,200,450).pipe(makeAntennae);
+
+
 });
