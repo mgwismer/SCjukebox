@@ -74,9 +74,9 @@ $(document).ready(function(){
 	function makeSpeakers(){
 	  var d = $.Deferred();
     //left speaker
-    animateArc(100,200,35,0,2*Math.PI,0);
+    animateArc(110,200,35,0,2*Math.PI,0);
     //right speaker
-    animateArc(300,200,35,0,2*Math.PI,0);
+    animateArc(340,200,35,0,2*Math.PI,0);
 	  setTimeout(function() {
 	  console.log('3');
 	    d.resolve();
