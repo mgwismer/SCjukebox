@@ -84,6 +84,22 @@ $(document).ready(function(){
 	  return d.promise();
 	}
 
+  function addEventListeners() {
+  	var currSong = document.getElementById("currSong-mp3");
+  	$('.box-play-btn').click(function() {
+  		console.log("play clicked");
+  		console.log(currSong);
+  		currSong.play();
+  	});
+  	$('.box-pause-btn').click(function() {
+  		currSong.pause();
+  	});
+  	$('.box-search-btn').click(function(){
+  		console.log("search clicked");
+  		$('.searchDiv').css('display','block');
+  	});
+  }
 	makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+	addEventListeners();
 
 });

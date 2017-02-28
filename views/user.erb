@@ -1,7 +1,10 @@
 
 <script type="text/javascript" src="/scripts/user.js"></script>
-<script type="text/javascript" src="/scripts/script.js">
-</script>
+
+</div>
+  <audio src=<%= @newtrack %> type="audio/mpeg" id="currSong-mp3">
+  <p>Your browser does not support the <code>audio</code> element.</p>
+</audio>
 <div class="container-fluid">
   <div class="empty-space"></div>
   <div class="empty-space"></div>
@@ -13,69 +16,46 @@
     <div class="col-md-8" id="boomBoxCont">
       <canvas id="boomBoxCanvas" width="500" height="500"></canvas>
       <div id="controlBtns">
-       <input type="button" name="play" class="ctrl-btn play-btn" value="PLAY">
-       <input type="button" name="pause" class="ctrl-btn pause-btn" value="PAUSE">
-       <input type="button" name="search" class="ctrl-btn search-btn" value="SEARCH">
+       <input type="button" name="play" class="ctrl-btn box-play-btn" value="PLAY">
+       <input type="button" name="pause" class="ctrl-btn box-pause-btn" value="PAUSE">
+       <input type="button" name="search" class="ctrl-btn box-search-btn" value="SEARCH">
       </div>
     </div>
   </div>
   <div class="song-container">
-    <% @user.songs.each do |song| %>
-    <div class="song-div row">
-      <div class="title-div col-md-4">
-        <h3> <%= song.title %></h3>
-      </div>
-      <div class="deletepost-div col-md-2">
-        <input type="button" value="delete"
-            class="main-delete-btn"> 
-      </div>
-    </div> 
-    <p> <%= song.rating %> </p>
-     <!-- Modal -->
-    <div id="delete-modal" class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">REMOVE POST</h4>
+    <% if @songs != nil %>
+      <% @songs.each do |song| %>
+        <div class="song-div row">
+          <div class="title-div col-md-4">
+            <h3> <%= @song.title %></h3>
           </div>
-          <div class="modal-body"> 
-            <p>  Change your mind about a recent post (or not so recent post?)</p> 
-          </div> 
-          <div class="modal-footer row"> 
-            <div class="close-btn col-md-1">
-              <input type="button" value="CANCEL" class="cancel-btn">
-            </div>
-            <div class="delete-form col-md-offset-8 col-md-3">
-              <form method="POST" action="/posts/<%= post.id %>/delete">
-                <input type="submit" value="delete already"
-                class="delete-btn">
-              </form> 
-            </div>
+          <div class="deletepost-div col-md-2">
+            <input type="button" value="delete"
+                class="main-delete-btn"> 
           </div>
-        </div>   
-      </div>
-    </div>
+        </div> 
+        <p> <%= @song.rating %> </p>
+      <% end %>
     <% end %>
+    <form method="GET" action="/addsong">
+      <% if @searchTracks != nil %>
+        <% @searchTracks.each do |track| %>
+        <input type="radio" name=<%= track.stream_url %> value=<%= track.title %>> <%= track.title %> <br>
+        <% end %>
+        <input type="submit" value="SUBMIT">
+      <% end %>
+    </form>
   </div>
-
-  <div class="personal-cont row">
-    <div class="idea-cont col-md-4">
-      <h3>a New Idea </h3>
-      <form method="POST" action="/posts/create/<%= @user.id %>">
-        <div>
-          <label for="title"> Title</label>
-          <input type="text" name="title">
-        </div>
-        <div>
-         <label for="content"> Content</label>
-         <textarea name="content"> </textarea>
-        </div>
-        <input type="submit" value="submit">
-      </form>
-    </div>
+  <div class="row searchDiv">
+    <h4> Search the sound cloud </h4>
+    <form method="POST" action="/searchcloud/<%= @user.id %>">
+      <div class="email-div">
+        <label for="keyword"> keyword </label>
+      <input type="text" name="keyword">
+      </div>
+      <input type="submit">
+    </form>
   </div>
-  <div class="empty-space"></div>
-  <div class="empty-space"></div>
   <div class="remove-cont">
     <h3>or Remove me </h3>
     <form method="POST" action="/users/<%= @user.id %>/delete">

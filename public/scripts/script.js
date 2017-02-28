@@ -9,9 +9,11 @@ $(document).ready(function() {
 		var playBtn = document.getElementsByClassName("play-btn")[0];
    	var pauseBtn = document.getElementsByClassName("pause-btn")[0];
    	playBtn.addEventListener("click",function() {
-	 		currSong.play() });
+	 		currSong.play(); 
+    });
    	pauseBtn.addEventListener("click",function() {
-	 		currSong.pause() });
+	 		currSong.pause(); 
+    });
   }
 
   function setBodyColor(color) {

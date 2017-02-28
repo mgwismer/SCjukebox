@@ -33,10 +33,6 @@ get '/home' do
 	puts params.inspect
 end
 
-get '/search' do
-	erb :search
-end
-
 #goto the sign up page
 get '/signup' do
    erb :signup
@@ -68,26 +64,27 @@ get '/logout' do
   end
 end
 
-post '/searchcloud' do
+post '/searchcloud/:id' do
+  @user = User.find(params["id"])
 	keyword = params['keyword']
-	@tracks = client.get('/tracks',{q: keyword})
-	erb :results
-end
-
-post '/users/create' do
-  @user= User.new(params)
-  @user.save
-  #default colors
-  @color = Color.new(initColor)
-  @color.user_id = @user.id
-  @color.save
-  redirect "/user/#{@user.id}"
+	@searchTracks = client.get('/tracks',{q: keyword})
+	@songs = nil
+	erb :user
+	# redirect "/user/#{session[:user_id]}"
 end
 
 get '/user/:id' do
-   @users = User.all
    @user = User.find(params["id"])
    @colors = Color.find_by(user_id: @user.id)
+   @songs = @user.songs
+   #This necessary in case user does not have any songs, do
+   #not want to through an error. 
+   if (@songs.length == 0)
+	   @tracks = client.get('/tracks', :limit => 10)
+		 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
+   else
+   	 @newtrack = @songs[0]
+   end
    erb :user
 end
 
