@@ -74,24 +74,28 @@ post '/searchcloud/:id' do
 end
 
 get '/user/:id' do
-   @user = User.find(params["id"])
-   @colors = Color.find_by(user_id: @user.id)
-   @songs = @user.songs
-   #This necessary in case user does not have any songs, do
-   #not want to through an error. 
-   if (@songs.length == 0)
-	   @tracks = client.get('/tracks', :limit => 10)
-		 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-   else
-   	 @newtrack = @songs[0]
-   end
-   erb :user
+  @user = User.find(params["id"])
+  @colors = Color.find_by(user_id: @user.id)
+  @songs = @user.songs
+  #This necessary in case user does not have any songs, do
+  #not want to through an error. 
+  if (@newtrack == nil)
+	 	if (@songs.length == 0)
+	 	 @tracks = client.get('/tracks', :limit => 10)
+	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']	
+		else 
+		 @newtrack = @songs[0]
+		end 
+  end
+  puts @newtrack
+ erb :user
 end
 
-get '/addsong' do
+get '/addsong/:id' do
+	@user = User.find(params["id"])
 	puts params.keys[0]
 	newstream = params.keys[0].dup
 	puts newstream
 	@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-	erb :home
+	erb :user
 end

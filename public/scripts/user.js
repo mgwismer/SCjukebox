@@ -99,7 +99,7 @@ $(document).ready(function(){
   		$('.searchDiv').css('display','block');
   	});
   }
-	makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
-	addEventListeners();
+  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+  addEventListeners();
 
 });

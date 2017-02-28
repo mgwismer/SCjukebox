@@ -37,7 +37,7 @@
         <p> <%= @song.rating %> </p>
       <% end %>
     <% end %>
-    <form method="GET" action="/addsong">
+    <form method="GET" action="/addsong/<%= @user.id %>">
       <% if @searchTracks != nil %>
         <% @searchTracks.each do |track| %>
         <input type="radio" name=<%= track.stream_url %> value=<%= track.title %>> <%= track.title %> <br>
