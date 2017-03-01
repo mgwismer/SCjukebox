@@ -102,4 +102,28 @@ $(document).ready(function(){
   makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
   addEventListeners();
 
+  //First attempt at implementing ajax
+  $('#searchForm').on('submit', function(e){
+    e.preventDefault();
+    console.log('button clicked');
+    var keyword = $('#inputQuery').val();
+    var url = '/searchcloud';
+    $('#results').html("Patience my friend");
+    $.ajax({
+    	  type: 'POST',
+    	  url: url,
+    	  dataType: "jsonp",
+    	  data: {keyword: keyword},
+    	  success: function(data) {
+        	  console.log(data[1]);
+        	  console.log("success");
+            //var content = <%= @returnTracks %>;
+            //$('#results').html(content);
+        },
+        error: function() {
+        	console.log("error");
+        }
+      });
+    });
+
 });

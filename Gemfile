@@ -2,6 +2,7 @@ source "http://www.rubygems.org"
 ruby "2.3.3"
 
 gem 'sinatra'
+gem 'sinatra-jsonp'
 gem 'rack'
 gem 'soundcloud'
 gem 'rake'
