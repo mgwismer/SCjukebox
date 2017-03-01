@@ -37,6 +37,9 @@
         <p> <%= @song.rating %> </p>
       <% end %>
     <% end %>
+    <div id="results">
+      
+    </div>
     <form method="GET" action="/addsong/<%= @user.id %>">
       <% if @searchTracks != nil %>
         <% @searchTracks.each do |track| %>
@@ -48,12 +51,10 @@
   </div>
   <div class="row searchDiv">
     <h4> Search the sound cloud </h4>
-    <form method="POST" action="/searchcloud/<%= @user.id %>">
-      <div class="email-div">
-        <label for="keyword"> keyword </label>
-      <input type="text" name="keyword">
-      </div>
-      <input type="submit">
+    <form id="searchForm" method="POST" action="/searchcloud">
+      <label for="keyword"> keyword </label>
+      <input type="text" name="keyword" id="inputQuery">
+      <input type="submit" id="searchFormBtn">
     </form>
   </div>
   <div class="remove-cont">
