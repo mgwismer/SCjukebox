@@ -2,8 +2,8 @@ $(document).ready(function(){
 
   var cvs = document.getElementById("boomBoxCanvas");
   var ctx = cvs.getContext("2d");
+  //ratio makes the line shorter unless it is one
 	function drawLine(x1,y1,x2,y2,ratio) {
-	  //ctx.fillRect(0,0,300,300);
 	  ctx.beginPath();
 	  ctx.moveTo(x1,y1);
 	  x2 = x1 + ratio * (x2-x1);
@@ -15,6 +15,7 @@ $(document).ready(function(){
 	  // we probably also want a ctx.closePath()
 	}
   
+  //tried to adapt drawLine to drawArc but it does not draw slow
   function drawArc(xcen,ycen,rad,ang1,ang2,ratio) {
 	// Drawing a circle the traditional way
 		ctx.beginPath();
@@ -24,7 +25,8 @@ $(document).ready(function(){
 		// ctx.fill();
 		// ctx.closePath();
 	}
-
+  
+  //slowly draws a line by adding drawing it a little longer each time.
 	function animateLine(x1,y1,x2,y2,ratio) {
 	  ratio = ratio || 0;
 	  drawLine(x1,y1,x2,y2,ratio);
@@ -44,7 +46,9 @@ $(document).ready(function(){
 	    });
 	  }
 	}
-
+  
+  //The jQuery Deferred option allows asynchronous functions to 
+  //be strung together. something to do with callback and promises.
 	function makeBox(startX, startY, height, width){
 	  var d = $.Deferred();
 		var endX = startX + width;
@@ -98,32 +102,56 @@ $(document).ready(function(){
   		console.log("search clicked");
   		$('.searchDiv').css('display','block');
   	});
+	  $('#searchForm').on('submit', function(e){
+      searchCloud(e);
+    });
   }
-  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
-  addEventListeners();
-
-  //First attempt at implementing ajax
-  $('#searchForm').on('submit', function(e){
+ 
+  function searchCloud(e) {
     e.preventDefault();
     console.log('button clicked');
     var keyword = $('#inputQuery').val();
     var url = '/searchcloud';
     $('#results').html("Patience my friend");
-    $.ajax({
-    	  type: 'POST',
-    	  url: url,
-    	  dataType: "jsonp",
-    	  data: {keyword: keyword},
-    	  success: function(data) {
-        	  console.log(data[1]);
-        	  console.log("success");
-            //var content = <%= @returnTracks %>;
-            //$('#results').html(content);
-        },
-        error: function() {
-        	console.log("error");
-        }
-      });
-    });
+    readUsingAJAX(url,keyword);	
+  }
+
+  function readUsingAJAX(url,keyword) {
+		var d = $.Deferred();
+	 	$.ajax({
+		  type: 'POST',
+		  url: url,
+		  dataType: "jsonp",
+		  data: {keyword: keyword},
+		  success: function(data) {
+	    	  console.log(data[1]);
+	    	  console.log("success");
+	    	  displaySearchResults(data);
+	    },
+	    error: function() {
+	    	console.log("error");
+	    }
+		}); 
+		setTimeout(function() {
+			console.log('3');
+	  	d.resolve();
+		}, 1000);
+		return d.promise();
+  }
+
+  function displaySearchResults(tracks) {
+  	$('.searchDiv').css('display','none');
+  	var resultsDiv = $('#results');
+  	for (var i = 0; i < tracks.length; i++) {
+  		resultsDiv.append('<p>'+tracks[i].title+'</p>');
+  		console.log(tracks[i].title);
+  	}
+  }
+  //Here's the jQuery function to string the functions in order.
+  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+  addEventListeners();
+
+  //First attempt at implementing ajax
+
 
 });

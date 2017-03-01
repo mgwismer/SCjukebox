@@ -76,10 +76,6 @@ post '/searchcloud', :provides => :json do
 	@returnTracks = searchTracks
 	puts @returnTracks
 	JSONP @returnTracks
-	#so that results do not display the old way.
-	#@searchTracks = nil
-	#erb :user
-	# redirect "/user/#{session[:user_id]}"
 end
 
 get '/user/:id' do
