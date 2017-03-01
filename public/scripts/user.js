@@ -112,12 +112,16 @@ $(document).ready(function(){
     $.ajax({
     	  type: 'POST',
     	  url: url,
-    	  dataType: "json",
+    	  dataType: "jsonp",
     	  data: {keyword: keyword},
-    	  success: function(response) {
-        	  console.log(response);
+    	  success: function(data) {
+        	  console.log(data[1]);
+        	  console.log("success");
             //var content = <%= @returnTracks %>;
             //$('#results').html(content);
+        },
+        error: function() {
+        	console.log("error");
         }
       });
     });

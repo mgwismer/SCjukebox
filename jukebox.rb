@@ -4,6 +4,7 @@ require 'sinatra/flash'
 require 'SoundCloud'
 require './models.rb'
 require 'json'
+require 'sinatra/jsonp'
 
 set :database, "sqlite3:test.sqlite3"
 enable :sessions
@@ -69,12 +70,14 @@ post '/searchcloud', :provides => :json do
   #@user = User.find(params["id"])
 	keyword = params[:keyword]
 	puts keyword
-	@searchTracks = client.get('/tracks',{q: keyword})
+	searchTracks = client.get('/tracks',{q: keyword})
+	#puts @searchTracks
 	@songs = nil
-	@returnTracks = @searchTracks.to_json
+	@returnTracks = searchTracks
 	puts @returnTracks
+	JSONP @returnTracks
 	#so that results do not display the old way.
-	@searchTracks = nil
+	#@searchTracks = nil
 	#erb :user
 	# redirect "/user/#{session[:user_id]}"
 end
