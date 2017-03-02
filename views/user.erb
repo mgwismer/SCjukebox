@@ -40,13 +40,8 @@
     <div id="results">
       
     </div>
-    <form method="GET" action="/addsong/<%= @user.id %>">
-      <% if @searchTracks != nil %>
-        <% @searchTracks.each do |track| %>
-        <input type="radio" name=<%= track.stream_url %> value=<%= track.title %>> <%= track.title %> <br>
-        <% end %>
-        <input type="submit" value="SUBMIT">
-      <% end %>
+    <form method="GET" action="/addsong/<%= @user.id %>" id="addSongList">
+    
     </form>
   </div>
   <div class="row searchDiv">

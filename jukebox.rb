@@ -74,7 +74,6 @@ post '/searchcloud', :provides => :json do
 	#puts @searchTracks
 	@songs = nil
 	@returnTracks = searchTracks
-	puts @returnTracks
 	JSONP @returnTracks
 end
 
@@ -98,8 +97,10 @@ end
 
 get '/addsong/:id' do
 	@user = User.find(params["id"])
-	puts params.keys[0]
-	newstream = params.keys[0].dup
+	puts params
+	puts params["id"]
+	#newstream = params.keys[0].dup
+	newstream = params["songBtn"]
 	puts newstream
 	@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	erb :user
