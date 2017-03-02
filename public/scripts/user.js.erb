@@ -108,11 +108,9 @@ $(document).ready(function(){
   }
  
   function searchCloud(e) {
-  	//prevents the form from submitting to the controller in the normal way
     e.preventDefault();
     console.log('button clicked');
     var keyword = $('#inputQuery').val();
-    //this is where finds the correct place in sinatra to get the data
     var url = '/searchcloud';
     $('#results').html("Patience my friend");
     readUsingAJAX(url,keyword);	
@@ -128,7 +126,6 @@ $(document).ready(function(){
 		  success: function(data) {
 	    	  console.log(data[1]);
 	    	  console.log("success");
-	    	  //create the return search list in javascript
 	    	  displaySearchResults(data);
 	    },
 	    error: function() {
@@ -155,7 +152,6 @@ $(document).ready(function(){
   	}
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
     var songURL = $('input[name=songBtn]:checked').val();
-    console.log(songURL);
   }
   //Here's the jQuery function to string the functions in order.
   makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
