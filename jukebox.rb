@@ -98,7 +98,6 @@ end
 post '/addsong' do
 	@user = User.find(session[:user_id])
 	puts params
-	puts params["id"]
 	#newstream = params.keys[0].dup
 	newstream = params["songBtn"]
 	puts newstream
