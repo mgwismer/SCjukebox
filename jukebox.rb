@@ -99,8 +99,8 @@ post '/addsong' do
 	@user = User.find(session[:user_id])
 	puts params
 	#newstream = params.keys[0].dup
-	newstream = params["songBtn"]
+	newstream = params[:keyword]
 	puts newstream
 	@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-	erb :user
+	JSONP @newtrack
 end

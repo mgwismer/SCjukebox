@@ -105,8 +105,34 @@ $(document).ready(function(){
 	  $('#searchForm').on('submit', function(e){
       searchCloud(e);
     });
+    $('#addSongList').on('submit', function(e){
+      searchCloud(e);
+    });
   }
  
+   function listenToSearch(e) {
+  	//selects a song from the searchlist form
+  	e.preventDefault();
+  	var songURL = $('input[name=songBtn]:checked').val();
+    console.log(songURL);
+    //I believe the return data is different than the sent data.
+	 	$.ajax({
+		  type: 'POST',
+		  url: '/addSong',
+		  dataType: "jsonp",
+		  data: {keyword: songURL},
+		  success: function(data) {
+	    	  console.log(data);
+	    	  console.log("success");
+	    	  //create the return search list in javascript
+	    	  //displaySearchResults(data);
+	    },
+	    error: function() {
+	    	console.log("error");
+	    }
+		}); 
+  }
+
   function searchCloud(e) {
   	//prevents the form from submitting to the controller in the normal way
     e.preventDefault();
