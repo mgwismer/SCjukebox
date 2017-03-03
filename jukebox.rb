@@ -95,8 +95,8 @@ get '/user/:id' do
  erb :user
 end
 
-get '/addsong/:id' do
-	@user = User.find(params["id"])
+post '/addsong' do
+	@user = User.find(session[:user_id])
 	puts params
 	puts params["id"]
 	#newstream = params.keys[0].dup
