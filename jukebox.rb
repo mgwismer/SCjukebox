@@ -18,16 +18,9 @@ client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
 #   puts track.permalink_url
 # end
 get '/' do 
-	 @tracks = client.get('/tracks', :limit => 10)
-	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
+	 # @tracks = client.get('/tracks', :limit => 10)
+	 # @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	erb :home
-end
-
-#goto the login page
-get '/tracks' do
-	 @tracks = client.get('/tracks', :limit => 10)
-	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']	
-   erb :home
 end
 
 get '/home' do
@@ -95,7 +88,7 @@ get '/user/:id' do
  erb :user
 end
 
-post '/addsong' do
+post '/addSong', :provides => :json do
 	@user = User.find(session[:user_id])
 	puts params
 	#newstream = params.keys[0].dup

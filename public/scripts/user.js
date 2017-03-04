@@ -106,13 +106,14 @@ $(document).ready(function(){
       searchCloud(e);
     });
     $('#addSongList').on('submit', function(e){
-      searchCloud(e);
+      listenToSearch(e);
     });
   }
  
    function listenToSearch(e) {
   	//selects a song from the searchlist form
   	e.preventDefault();
+  	console.log("submit clicked");
   	var songURL = $('input[name=songBtn]:checked').val();
     console.log(songURL);
     //I believe the return data is different than the sent data.
@@ -124,6 +125,8 @@ $(document).ready(function(){
 		  success: function(data) {
 	    	  console.log(data);
 	    	  console.log("success");
+	    	  $("#currSong-mp3").attr("src",data);
+	    	  console.log($("#currSong-mp3"));
 	    	  //create the return search list in javascript
 	    	  //displaySearchResults(data);
 	    },
@@ -161,11 +164,6 @@ $(document).ready(function(){
 	    	console.log("error");
 	    }
 		}); 
-		// setTimeout(function() {
-		// 	console.log('3');
-	 //  	d.resolve();
-		// }, 1000);
-		// return d.promise();
   }
 
   function displaySearchResults(tracks) {
@@ -180,8 +178,6 @@ $(document).ready(function(){
   		console.log(tracks[i]);
   	}
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
-    var songURL = $('input[name=songBtn]:checked').val();
-    console.log(songURL);
   }
   //Here's the jQuery function to string the functions in order.
   makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
