@@ -114,21 +114,19 @@ $(document).ready(function(){
   	//selects a song from the searchlist form
   	e.preventDefault();
   	console.log("submit clicked");
-  	var songURL = $('input[name=songBtn]:checked').val();
-    console.log(songURL);
+  	var songID = $('input[name=songBtn]:checked').val();
+    console.log(songID);
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
 		  url: '/addSong',
 		  dataType: "jsonp",
-		  data: {keyword: songURL},
+		  data: {id: songID},
 		  success: function(data) {
-	    	  console.log(data);
-	    	  console.log("success");
-	    	  $("#currSong-mp3").attr("src",data);
+	    	  //$("#currSong-mp3").attr("src",data);
+	    	  console.log(data.song.title);
+	    	  console.log(data.key);
 	    	  console.log($("#currSong-mp3"));
-	    	  //create the return search list in javascript
-	    	  //displaySearchResults(data);
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -171,7 +169,7 @@ $(document).ready(function(){
   	var resultsDiv = $('#addSongList');
   	for (var i = 0; i < tracks.length; i++) {
   		$('<input type="radio" name="songBtn"/>').attr(
-  			"value",tracks[i].stream_url
+  			"value",tracks[i].id
 			).appendTo(resultsDiv);
 			$("<p>"+tracks[i].title+"</p>").appendTo(resultsDiv);
 			$("<br>").appendTo(resultsDiv);

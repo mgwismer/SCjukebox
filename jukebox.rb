@@ -90,10 +90,10 @@ end
 
 post '/addSong', :provides => :json do
 	@user = User.find(session[:user_id])
-	puts params
-	#newstream = params.keys[0].dup
-	newstream = params[:keyword]
-	puts newstream
-	@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-	JSONP @newtrack
+	songID = params[:id]
+	playTrack = client.get('/tracks/'<<songID)
+	myHash = {:song => playTrack, :key => ENV['SOUND_CLOUD_API_KEY']}
+	puts myHash
+	#@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
+	JSONP myHash
 end
