@@ -105,6 +105,9 @@ $(document).ready(function(){
 	  $('#searchForm').on('submit', function(e){
       searchCloud(e);
     });
+    $('.box-add-btn').click(function() {
+    	addCurrentSongToPlayList();
+    })
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
     });
@@ -113,9 +116,8 @@ $(document).ready(function(){
    function listenToSearch(e) {
   	//selects a song from the searchlist form
   	e.preventDefault();
-  	console.log("submit clicked");
+  	//find the radio button that was clicked
   	var songID = $('input[name=songBtn]:checked').val();
-    console.log(songID);
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
@@ -123,11 +125,15 @@ $(document).ready(function(){
 		  dataType: "jsonp",
 		  data: {id: songID},
 		  success: function(data) {
-	    	  //$("#currSong-mp3").attr("src",data);
-	    	  console.log(data.song.title);
-	    	  console.log(data.key);
-	    	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key)
-	    	  console.log($("#currSong-mp3"));
+		  	  //show song in the boom box
+		  	  $('#currSongTitle').html(data.song.title);
+	    	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key);
+	    	  //uncheck the radio button
+	    	  $('input[name=songBtn]:checked').attr('checked',false);
+	    	  $('.box-add-btn').css('visibility','visible');
+	    	  //used to store the id of the current song.
+	    	  $('#songID').html(data.song.id);
+	        document.getElementById("currSong-mp3").play();
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -142,7 +148,6 @@ $(document).ready(function(){
     var keyword = $('#inputQuery').val();
     //this is where finds the correct place in sinatra to get the data
     var url = '/searchcloud';
-    $('#results').html("Patience my friend");
     readUsingAJAX(url,keyword);	
   }
 

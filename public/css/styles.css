@@ -105,13 +105,25 @@ body {
   height: 100%;
   width: 100%; }
 
+#songTitleDiv {
+  position: absolute;
+  width: 100%;
+  bottom: 300px;
+  left: 70px; }
+
 #controlBtns {
   position: absolute;
   width: 100%;
   bottom: 220px;
-  left: 70px; }
+  left: 50px; }
 
 .searchDiv {
   display: none; }
+
+.box-add-btn {
+  visibility: hidden; }
+
+#songID {
+  visibility: hidden; }
 
 /*# sourceMappingURL=styles.css.map */
