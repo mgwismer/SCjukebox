@@ -126,6 +126,7 @@ $(document).ready(function(){
 	    	  //$("#currSong-mp3").attr("src",data);
 	    	  console.log(data.song.title);
 	    	  console.log(data.key);
+	    	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key)
 	    	  console.log($("#currSong-mp3"));
 	    },
 	    error: function() {
