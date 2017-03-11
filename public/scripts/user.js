@@ -106,7 +106,7 @@ $(document).ready(function(){
       searchCloud(e);
     });
     $('.box-add-btn').click(function() {
-    	addCurrentSongToPlayList();
+    	addCurrentSongToPlaylist();
     })
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
@@ -132,7 +132,7 @@ $(document).ready(function(){
 	    	  $('input[name=songBtn]:checked').attr('checked',false);
 	    	  $('.box-add-btn').css('visibility','visible');
 	    	  //used to store the id of the current song.
-	    	  $('#songID').html(data.song.id);
+	    	  $('#songID').text(data.song.id);
 	        document.getElementById("currSong-mp3").play();
 	    },
 	    error: function() {
@@ -141,16 +141,18 @@ $(document).ready(function(){
 		}); 
   }
 
+  //result of search button  
   function searchCloud(e) {
   	//prevents the form from submitting to the controller in the normal way
     e.preventDefault();
-    console.log('button clicked');
     var keyword = $('#inputQuery').val();
     //this is where finds the correct place in sinatra to get the data
     var url = '/searchcloud';
     readUsingAJAX(url,keyword);	
   }
 
+  //searches the sound cloud on the backend with a 
+  //user supplied keyword.
   function readUsingAJAX(url,keyword) {
 		// var d = $.Deferred();
 	 	$.ajax({
@@ -159,8 +161,6 @@ $(document).ready(function(){
 		  dataType: "jsonp",
 		  data: {keyword: keyword},
 		  success: function(data) {
-	    	  console.log(data[1]);
-	    	  console.log("success");
 	    	  //create the return search list in javascript
 	    	  displaySearchResults(data);
 	    },
@@ -170,6 +170,9 @@ $(document).ready(function(){
 		}); 
   }
 
+  //gets the tracks returned from ajax and shows them with
+  //radio buttons. User can choose to listen to a searched song.
+  //click the ADD TO PLAYLIST button to add it to their playlist.
   function displaySearchResults(tracks) {
   	$('.searchDiv').css('display','none');
   	var resultsDiv = $('#addSongList');
@@ -183,8 +186,15 @@ $(document).ready(function(){
   	}
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
   }
+
+  function addCurrentSongToPlaylist() {
+  	var songID = $('#songID').text();
+  	console.log(songID);
+  }
   //Here's the jQuery function to string the functions in order.
+  //Draws the boom box.
   makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+  //The buttons should be inside the boombox.
   addEventListeners();
 
 });
