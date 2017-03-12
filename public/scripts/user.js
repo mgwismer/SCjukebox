@@ -105,8 +105,9 @@ $(document).ready(function(){
 	  $('#searchForm').on('submit', function(e){
       searchCloud(e);
     });
-    $('.box-add-btn').click(function() {
-    	addCurrentSongToPlaylist();
+	//add is just a button not a submit button.
+    $('.box-add-btn').on('click', function(e) {
+    	addCurrentSongToPlaylist(e);
     })
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
@@ -121,7 +122,7 @@ $(document).ready(function(){
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
-		  url: '/addSong',
+		  url: '/pickSong',
 		  dataType: "jsonp",
 		  data: {id: songID},
 		  success: function(data) {
@@ -187,8 +188,30 @@ $(document).ready(function(){
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
   }
 
-  function addCurrentSongToPlaylist() {
+  function addCurrentSongToPlaylist(e) {
+  	//this may not be necessary since it is not part of a form
+  	e.preventDefault();	
   	var songID = $('#songID').text();
+  	$.ajax({
+		  type: 'POST',
+		  url: '/addSong',
+		  dataType: "jsonp",
+		  data: {id: songID},
+		  success: function(data) {
+		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
+		  	removeSongFromSearchList(songID);
+		  	console.log('success');
+		  	console.log(data);
+	    },
+	    error: function() {
+	    	console.log("error");
+	    	console.log(songID);
+	    }
+		}); 
+  	console.log(songID);
+  }
+
+  function removeSongFromSearchList(songID) {
   	console.log(songID);
   }
   //Here's the jQuery function to string the functions in order.

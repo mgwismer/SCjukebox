@@ -84,16 +84,32 @@ get '/user/:id' do
 		 @newtrack = @songs[0]
 		end 
   end
-  puts @newtrack
+  #puts @newtrack
  erb :user
 end
 
-post '/addSong', :provides => :json do
+post '/pickSong', :provides => :json do
 	@user = User.find(session[:user_id])
 	songID = params[:id]
 	playTrack = client.get('/tracks/'<<songID)
 	myHash = {:song => playTrack, :key => ENV['SOUND_CLOUD_API_KEY']}
-	puts myHash
+	#puts myHash
 	#@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	JSONP myHash
+end
+
+post '/addSong' do
+  songID = params[:id]
+  #puts params
+	songTrack = client.get('/tracks/'<<songID)
+	title = songTrack.title
+	artwork = songTrack.artwork_url
+	artist = songTrack.permalink_url
+	url_track = songTrack.stream_url
+	user_id = session[:user_id]
+	song = Song.new(title: title, artwork: artwork, artist: artist, url_track: url_track, user_id: user_id, songid: songID)
+	song.save
+  puts songTrack
+  puts songTrack.title
+  #JSONP songTrack
 end
