@@ -126,4 +126,10 @@ body {
 #songID {
   visibility: hidden; }
 
+.playlist-container {
+  display: none; }
+
+.searchlist-container {
+  display: block; }
+
 /*# sourceMappingURL=styles.css.map */

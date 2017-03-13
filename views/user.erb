@@ -23,30 +23,30 @@
        <input type="button" name="play" class="ctrl-btn box-play-btn" value="PLAY">
        <input type="button" name="pause" class="ctrl-btn box-pause-btn" value="PAUSE">
        <input type="button" name="search" class="ctrl-btn box-search-btn" value="SEARCH">
-       <input type="button" name="search" class="ctrl-btn box-search-btn" value="PLAYLIST">
-       <input type="button" name="search" class="ctrl-btn box-add-btn" value="ADD TO PLAYLIST">
+       <input type="button" name="playlist" class="ctrl-btn box-playlist-btn" value="PLAYLIST">
+       <input type="button" name="add" class="ctrl-btn box-add-btn" value="ADD TO PLAYLIST">
        <p id="songID"></p>
       </div>
     </div>
   </div>
-  <div class="song-container">
-    <% if @songs != nil %>
-      <% @songs.each do |song| %>
+  <!-- shows the users playlist change it in css with display option -->
+  <div class="playlist-container">
+    <% if @user.songs != nil %>
+      <% @user.songs.each do |song| %>
         <div class="song-div row">
           <div class="title-div col-md-4">
-            <h3> <%= @song.title %></h3>
+            <h3> <%= song.title %></h3>
           </div>
           <div class="deletepost-div col-md-2">
             <input type="button" value="delete"
                 class="main-delete-btn"> 
           </div>
         </div> 
-        <p> <%= @song.rating %> </p>
+        <p> <%= song.rating %> </p>
       <% end %>
     <% end %>
-    <div id="results">
-      
-    </div>
+  </div>
+  <div id="searchlist-container">
     <form method="POST" action="/pickSong" id="addSongList">
     
     </form>

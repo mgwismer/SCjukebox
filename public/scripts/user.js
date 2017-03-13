@@ -58,7 +58,6 @@ $(document).ready(function(){
 		animateLine(endX,endY,endX,startY,0);
 		animateLine(endX,startY,startX,startY,0);
 	  setTimeout(function() {
-	    console.log('1');
 	    d.resolve();
 	  }, 2000);
 	  return d.promise();
@@ -69,7 +68,6 @@ $(document).ready(function(){
 		animateLine(150,100,70,20);
 		animateLine(200,100,280,20);
 	  setTimeout(function() {
-	    console.log('2');
 	    d.resolve();
 	  }, 1000);
 	  return d.promise();
@@ -82,7 +80,6 @@ $(document).ready(function(){
     //right speaker
     animateArc(340,200,35,0,2*Math.PI,0);
 	  setTimeout(function() {
-	  console.log('3');
 	    d.resolve();
 	  }, 1000);
 	  return d.promise();
@@ -91,31 +88,36 @@ $(document).ready(function(){
   function addEventListeners() {
   	var currSong = document.getElementById("currSong-mp3");
   	$('.box-play-btn').click(function() {
-  		console.log("play clicked");
-  		console.log(currSong);
   		currSong.play();
   	});
   	$('.box-pause-btn').click(function() {
   		currSong.pause();
   	});
+  	//this button display the search form where user can type in keyword.
   	$('.box-search-btn').click(function(){
   		console.log("search clicked");
   		$('.searchDiv').css('display','block');
   	});
+  	$('.box-playlist-btn').click(function(){
+  		$('.searchlist-container').css('display','none');
+  		$('.playlist-container').css('display','block');
+  	});
+  	//this button submits the keyword to do the search
 	  $('#searchForm').on('submit', function(e){
       searchCloud(e);
     });
-	//add is just a button not a submit button.
+	  //add is just a button not a submit button.
     $('.box-add-btn').on('click', function(e) {
     	addCurrentSongToPlaylist(e);
     })
+    //this is when the radio button is selected and submitted in the search list.
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
     });
   }
  
+    //selects a song from the searchlist form
    function listenToSearch(e) {
-  	//selects a song from the searchlist form
   	e.preventDefault();
   	//find the radio button that was clicked
   	var songID = $('input[name=songBtn]:checked').val();
@@ -146,24 +148,26 @@ $(document).ready(function(){
   function searchCloud(e) {
   	//prevents the form from submitting to the controller in the normal way
     e.preventDefault();
+    //gets the value from the text box.
     var keyword = $('#inputQuery').val();
-    //this is where finds the correct place in sinatra to get the data
-    var url = '/searchcloud';
-    readUsingAJAX(url,keyword);	
+    readUsingAJAX(keyword);	
   }
 
   //searches the sound cloud on the backend with a 
   //user supplied keyword.
-  function readUsingAJAX(url,keyword) {
-		// var d = $.Deferred();
+  function readUsingAJAX(keyword) {
 	 	$.ajax({
 		  type: 'POST',
-		  url: url,
+		  url: '/searchcloud',
 		  dataType: "jsonp",
 		  data: {keyword: keyword},
+		  //data consists of all the song objects
 		  success: function(data) {
 	    	  //create the return search list in javascript
-	    	  displaySearchResults(data);
+	    	  myBoomBox.updateSearchList(data);
+	    	  console.log('search data');
+	    	  console.log(data);
+	    	  // displaySearchResults(data);
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -175,6 +179,14 @@ $(document).ready(function(){
   //radio buttons. User can choose to listen to a searched song.
   //click the ADD TO PLAYLIST button to add it to their playlist.
   function displaySearchResults(tracks) {
+    //display the search list
+  	$('.searchlist-container').css('display','block');
+  	console.log('show search list');
+  	console.log(tracks);
+  	console.log(tracks.length);
+  	//hide the playlist
+  	$('.playlist-container').css('display','none');
+  	//seachDiv is the text box to type in a keyword to search for.
   	$('.searchDiv').css('display','none');
   	var resultsDiv = $('#addSongList');
   	for (var i = 0; i < tracks.length; i++) {
@@ -183,7 +195,6 @@ $(document).ready(function(){
 			).appendTo(resultsDiv);
 			$("<p>"+tracks[i].title+"</p>").appendTo(resultsDiv);
 			$("<br>").appendTo(resultsDiv);
-  		console.log(tracks[i]);
   	}
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
   }
@@ -199,25 +210,70 @@ $(document).ready(function(){
 		  data: {id: songID},
 		  success: function(data) {
 		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
-		  	removeSongFromSearchList(songID);
+		  	myBoomBox.removeSongFromSearchList(songID);
 		  	console.log('success');
-		  	console.log(data);
 	    },
 	    error: function() {
 	    	console.log("error");
 	    	console.log(songID);
 	    }
 		}); 
-  	console.log(songID);
   }
 
-  function removeSongFromSearchList(songID) {
-  	console.log(songID);
+  function arrayObjectIndexOf(myArray, searchTerm, property) { 
+  	console.log(searchTerm);    
+  	for(var i = 0, len = myArray.length; i < len; i++) { 
+  	  console.log(myArray[i][property]);   
+			if (myArray[i][property] === searchTerm) 
+				return i;     
+		}     
+		return -1; 
   }
-  //Here's the jQuery function to string the functions in order.
-  //Draws the boom box.
-  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
-  //The buttons should be inside the boombox.
-  addEventListeners();
 
+  var Song = function(songID,title,stream_url,artist) {
+  	this.id = songID;
+  	this.title = title;
+  	this.stream_url = stream_url;
+  	this.artist = artist;
+  }
+
+  var Boombox = function() {
+  	this.playList = [];
+  	this.searchList = [];
+  	this.createBoomBox = function() {		
+		  //Here's the jQuery function to string the functions in order.
+		  //Draws the boom box.
+		  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+		  //The buttons should be inside the boombox.
+		  addEventListeners();
+  	}
+  	this.updateSearchList = function(songs) {
+  		for (var i = 0; i < songs.length; i++) {
+  			songID = songs[i].id;
+  			title = songs[i].title;
+  			stream_url = songs[i].stream_url;
+  			artist = songs[i].permalink;
+  			var song = new Song(songID,title,stream_url,artist);
+				this.searchList.push(song);  			
+  		}
+  		//display the search results on the page
+      displaySearchResults(this.searchList);  
+  	}
+
+  	this.removeSongFromSearchList = function(songid) {
+  		//stack overflow result for finding the index of the song with the id, songid
+  		console.log(typeof(songid));
+  		console.log(typeof(this.searchList[1].id));
+  		//e.id is a number (not sure why) but songid is a string. 
+			// index = this.searchList.map(function(e) { 
+			// 	return e.id; }).indexOf(songid);
+			index = arrayObjectIndexOf(this.searchlist, songid, 'id');
+			//remove the song from the search list
+  		this.searchList.splice(index,1);
+  		//redisplay the shortened searchList
+  		displaySearchResults(this.searchList);
+  	}
+  }
+  var myBoomBox = new Boombox();
+  myBoomBox.createBoomBox();
 });

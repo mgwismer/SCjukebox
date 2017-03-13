@@ -39,6 +39,7 @@ get '/loginpage' do
 end
 
 post '/login' do
+	puts params
   @user = User.where(email: params['email']).first
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
@@ -111,5 +112,5 @@ post '/addSong' do
 	song.save
   puts songTrack
   puts songTrack.title
-  #JSONP songTrack
+  JSONP songTrack
 end
