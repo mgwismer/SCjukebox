@@ -18,8 +18,6 @@ client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
 #   puts track.permalink_url
 # end
 get '/' do 
-	 # @tracks = client.get('/tracks', :limit => 10)
-	 # @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	erb :home
 end
 
@@ -36,6 +34,17 @@ end
 #goto the login page
 get '/loginpage' do
    erb :loginpage
+end
+
+post '/users/create' do
+  @user= User.new(params)
+  @user.save
+  session[:user_id] = @user.id
+  #default colors
+  @color = Color.new(initColor)
+  @color.user_id = @user.id
+  @color.save
+  redirect "/user/#{@user.id}"
 end
 
 post '/login' do
@@ -91,11 +100,10 @@ end
 
 post '/pickSong', :provides => :json do
 	@user = User.find(session[:user_id])
+	puts params
 	songID = params[:id]
 	playTrack = client.get('/tracks/'<<songID)
 	myHash = {:song => playTrack, :key => ENV['SOUND_CLOUD_API_KEY']}
-	#puts myHash
-	#@newtrack = newstream<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 	JSONP myHash
 end
 
@@ -110,7 +118,5 @@ post '/addSong' do
 	user_id = session[:user_id]
 	song = Song.new(title: title, artwork: artwork, artist: artist, url_track: url_track, user_id: user_id, songid: songID)
 	song.save
-  puts songTrack
-  puts songTrack.title
   JSONP songTrack
 end

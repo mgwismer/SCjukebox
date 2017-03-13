@@ -120,7 +120,10 @@ $(document).ready(function(){
    function listenToSearch(e) {
   	e.preventDefault();
   	//find the radio button that was clicked
-  	var songID = $('input[name=songBtn]:checked').val();
+  	var songID = parseInt($('input[name=songBtn]:checked').val());
+  	console.log("listen");
+  	console.log(songID);
+  	console.log(typeof(songID));
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
@@ -128,15 +131,17 @@ $(document).ready(function(){
 		  dataType: "jsonp",
 		  data: {id: songID},
 		  success: function(data) {
-		  	  //show song in the boom box
-		  	  $('#currSongTitle').html(data.song.title);
-	    	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key);
-	    	  //uncheck the radio button
-	    	  $('input[name=songBtn]:checked').attr('checked',false);
-	    	  $('.box-add-btn').css('visibility','visible');
-	    	  //used to store the id of the current song.
-	    	  $('#songID').text(data.song.id);
-	        document.getElementById("currSong-mp3").play();
+	  	  //show song in the boom box
+	  	  $('#currSongTitle').html(data.song.title);
+    	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key);
+    	  //uncheck the radio button
+    	  $('input[name=songBtn]:checked').attr('checked',false);
+    	  $('.box-add-btn').css('visibility','visible');
+    	  //used to store the id of the current song. I guess this is where the song id is converted to a string.
+    	  $('#songID').text(data.song.id);
+    	  console.log('after set curr song id');
+    	  console.log(typeof(data.song.id));
+        document.getElementById("currSong-mp3").play();
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -220,16 +225,6 @@ $(document).ready(function(){
 		}); 
   }
 
-  function arrayObjectIndexOf(myArray, searchTerm, property) { 
-  	console.log(searchTerm);    
-  	for(var i = 0, len = myArray.length; i < len; i++) { 
-  	  console.log(myArray[i][property]);   
-			if (myArray[i][property] === searchTerm) 
-				return i;     
-		}     
-		return -1; 
-  }
-
   var Song = function(songID,title,stream_url,artist) {
   	this.id = songID;
   	this.title = title;
@@ -248,6 +243,7 @@ $(document).ready(function(){
 		  addEventListeners();
   	}
   	this.updateSearchList = function(songs) {
+
   		for (var i = 0; i < songs.length; i++) {
   			songID = songs[i].id;
   			title = songs[i].title;
@@ -265,9 +261,8 @@ $(document).ready(function(){
   		console.log(typeof(songid));
   		console.log(typeof(this.searchList[1].id));
   		//e.id is a number (not sure why) but songid is a string. 
-			// index = this.searchList.map(function(e) { 
-			// 	return e.id; }).indexOf(songid);
-			index = arrayObjectIndexOf(this.searchlist, songid, 'id');
+			index = this.searchList.map(function(e) { 
+				return e.id; }).indexOf(songid);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
   		//redisplay the shortened searchList
