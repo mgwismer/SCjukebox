@@ -99,7 +99,7 @@ $(document).ready(function(){
   		$('.searchDiv').css('display','block');
   	});
   	$('.box-playlist-btn').click(function(){
-  		$('.searchlist-container').css('display','none');
+  		$('#searchlist-container').css('display','none');
   		$('.playlist-container').css('display','block');
   	});
   	//this button submits the keyword to do the search
@@ -127,6 +127,7 @@ $(document).ready(function(){
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
+		  //picks song from the seach list to sample it, before adding to playlist
 		  url: '/pickSong',
 		  dataType: "jsonp",
 		  data: {id: songID},
@@ -185,10 +186,7 @@ $(document).ready(function(){
   //click the ADD TO PLAYLIST button to add it to their playlist.
   function displaySearchResults(tracks) {
     //display the search list
-  	$('.searchlist-container').css('display','block');
-  	console.log('show search list');
-  	console.log(tracks);
-  	console.log(tracks.length);
+  	$('#searchlist-container').css('display','block');
   	//hide the playlist
   	$('.playlist-container').css('display','none');
   	//seachDiv is the text box to type in a keyword to search for.
@@ -204,10 +202,24 @@ $(document).ready(function(){
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
   }
 
+  //removes the searched songs from the addSongList form
+  function clearSearchResults() {
+  	//$('#searchlist-container').css('display','none');
+  	//for some reason $("#addSongList") is not returning the correct element of the form. Need to remove the elements from the form addSongList. songBtn is the name of the input buttons 
+  	x = document.getElementsByName("songBtn")[0];
+  	console.log(x)
+  	if (x != undefined) {
+	  	y = x.parentNode;
+	 		while (y.firstChild) {
+	      y.removeChild(y.firstChild);
+			}
+		}
+  }
+
   function addCurrentSongToPlaylist(e) {
   	//this may not be necessary since it is not part of a form
   	e.preventDefault();	
-  	var songID = $('#songID').text();
+  	var songID = parseInt($('#songID').text());
   	$.ajax({
 		  type: 'POST',
 		  url: '/addSong',
@@ -243,7 +255,9 @@ $(document).ready(function(){
 		  addEventListeners();
   	}
   	this.updateSearchList = function(songs) {
-
+  		//remove the old songs form searchlist
+  		this.searchList = [];
+  		clearSearchResults();
   		for (var i = 0; i < songs.length; i++) {
   			songID = songs[i].id;
   			title = songs[i].title;
@@ -258,13 +272,12 @@ $(document).ready(function(){
 
   	this.removeSongFromSearchList = function(songid) {
   		//stack overflow result for finding the index of the song with the id, songid
-  		console.log(typeof(songid));
-  		console.log(typeof(this.searchList[1].id));
-  		//e.id is a number (not sure why) but songid is a string. 
 			index = this.searchList.map(function(e) { 
 				return e.id; }).indexOf(songid);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
+  		//clear the current searchList
+  		clearSearchResults();
   		//redisplay the shortened searchList
   		displaySearchResults(this.searchList);
   	}

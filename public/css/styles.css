@@ -129,7 +129,7 @@ body {
 .playlist-container {
   display: none; }
 
-.searchlist-container {
+#searchlist-container {
   display: block; }
 
 /*# sourceMappingURL=styles.css.map */

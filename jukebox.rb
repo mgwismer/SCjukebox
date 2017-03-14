@@ -52,6 +52,7 @@ post '/login' do
   @user = User.where(email: params['email']).first
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
+    puts session[:user_id]
     flash[:notice] = "You got it, you're so  in"
     redirect "/user/#{session[:user_id]}"
   else 
@@ -99,6 +100,7 @@ get '/user/:id' do
 end
 
 post '/pickSong', :provides => :json do
+	puts session[:user_id]
 	@user = User.find(session[:user_id])
 	puts params
 	songID = params[:id]
