@@ -95,7 +95,8 @@ $(document).ready(function(){
   	});
   	//this button display the search form where user can type in keyword.
   	$('.box-search-btn').click(function(){
-  		console.log("search clicked");
+  		currSong.pause();
+  		clearSearchResults();
   		$('.searchDiv').css('display','block');
   	});
   	$('.box-playlist-btn').click(function(){
@@ -121,9 +122,6 @@ $(document).ready(function(){
   	e.preventDefault();
   	//find the radio button that was clicked
   	var songID = parseInt($('input[name=songBtn]:checked').val());
-  	console.log("listen");
-  	console.log(songID);
-  	console.log(typeof(songID));
     //I believe the return data is different than the sent data.
 	 	$.ajax({
 		  type: 'POST',
@@ -140,8 +138,6 @@ $(document).ready(function(){
     	  $('.box-add-btn').css('visibility','visible');
     	  //used to store the id of the current song. I guess this is where the song id is converted to a string.
     	  $('#songID').text(data.song.id);
-    	  console.log('after set curr song id');
-    	  console.log(typeof(data.song.id));
         document.getElementById("currSong-mp3").play();
 	    },
 	    error: function() {
@@ -171,9 +167,6 @@ $(document).ready(function(){
 		  success: function(data) {
 	    	  //create the return search list in javascript
 	    	  myBoomBox.updateSearchList(data);
-	    	  console.log('search data');
-	    	  console.log(data);
-	    	  // displaySearchResults(data);
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -257,7 +250,7 @@ $(document).ready(function(){
   	this.updateSearchList = function(songs) {
   		//remove the old songs form searchlist
   		this.searchList = [];
-  		clearSearchResults();
+  		//clearSearchResults();
   		for (var i = 0; i < songs.length; i++) {
   			songID = songs[i].id;
   			title = songs[i].title;
