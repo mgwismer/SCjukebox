@@ -132,6 +132,7 @@ $(document).ready(function(){
 		  success: function(data) {
 	  	  //show song in the boom box
 	  	  $('#currSongTitle').html(data.song.title);
+	  	  //set the src on the audio for the picked song
     	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key);
     	  //uncheck the radio button
     	  $('input[name=songBtn]:checked').attr('checked',false);
@@ -186,10 +187,15 @@ $(document).ready(function(){
   	$('.searchDiv').css('display','none');
   	var resultsDiv = $('#addSongList');
   	for (var i = 0; i < tracks.length; i++) {
+  		//the value of the radio button is the song id.
   		$('<input type="radio" name="songBtn"/>').attr(
-  			"value",tracks[i].id
+  			"value",tracks[i].songid
 			).appendTo(resultsDiv);
-			$("<p>"+tracks[i].title+"</p>").appendTo(resultsDiv);
+  		//only the title is displayed
+			$("<span>"+tracks[i].title+"</span>").appendTo(resultsDiv);
+			if (tracks[i].inPlaylist) {
+				$("<span class='redfont'> in playlist </span>").appendTo(resultsDiv);
+			}
 			$("<br>").appendTo(resultsDiv);
   	}
   	resultsDiv.append("<input type='submit' value='SUBMIT'>");
@@ -235,6 +241,7 @@ $(document).ready(function(){
   	this.title = title;
   	this.stream_url = stream_url;
   	this.artist = artist;
+  	this.inPlaylist = false;
   }
 
   var Boombox = function() {
@@ -249,16 +256,20 @@ $(document).ready(function(){
   	}
   	this.updateSearchList = function(songs) {
   		//remove the old songs form searchlist
-  		this.searchList = [];
+  		this.searchList = songs;
+  		console.log('searchList');
+  		console.log(songs);
+  		console.log(this.playList);
   		//clearSearchResults();
-  		for (var i = 0; i < songs.length; i++) {
-  			songID = songs[i].id;
-  			title = songs[i].title;
-  			stream_url = songs[i].stream_url;
-  			artist = songs[i].permalink;
-  			var song = new Song(songID,title,stream_url,artist);
-				this.searchList.push(song);  			
-  		}
+  		// for (var i = 0; i < songs.length; i++) {
+  		// 	songID = songs[i].id;
+  		// 	title = songs[i].title;
+  			//no sense in storing these since need to reget the song from sound cloud on backend with song id since I want to keep the api key off the front end as much as possible.
+  			// stream_url = songs[i].stream_url;
+  			// artist = songs[i].permalink;
+  		// 	var song = new Song(songID,title);
+				// this.searchList.push(song);  			
+  		// }
   		//display the search results on the page
       displaySearchResults(this.searchList);  
   	}

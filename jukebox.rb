@@ -50,6 +50,10 @@ end
 post '/login' do
 	puts params
   @user = User.where(email: params['email']).first
+  puts "Hello"
+  puts @user
+  songs = @user.songs
+  puts songs[0].songid
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
     puts session[:user_id]
@@ -71,31 +75,50 @@ get '/logout' do
 end
 
 post '/searchcloud', :provides => :json do
-  #@user = User.find(params["id"])
 	keyword = params[:keyword]
-	puts keyword
 	searchTracks = client.get('/tracks',{q: keyword})
-	#puts @searchTracks
+	#check to see if any of these songs are already in the users playlist. Make a hash with the suitable data.
+	@returnTracks = checkInPlayList(searchTracks)
 	@songs = nil
-	@returnTracks = searchTracks
 	JSONP @returnTracks
+end
+
+def checkInPlayList(tracks)
+	user = User.find(session[:user_id])
+	playlist = user.songs
+	puts playlist[0].songid
+	puts tracks[0].id
+	mySearchObj = {}
+	mySearchArr = []
+  tracks.each do |track|
+		mySearchObj = {:title => track.title, :songid => track.id }
+		puts track.id
+		puts playlist.any?{|song| song.songid.to_i == track.id.to_i}
+		if playlist.any?{|song| song.songid.to_i == track.id.to_i}
+			mySearchObj[:inPlaylist] = true
+		else 
+			mySearchObj[:inPlaylist] = false
+		end
+	  mySearchArr.push(mySearchObj)
+	end
+  return mySearchArr
 end
 
 get '/user/:id' do
   @user = User.find(params["id"])
   @colors = Color.find_by(user_id: @user.id)
   @songs = @user.songs
-  #This necessary in case user does not have any songs, do
-  #not want to through an error. 
   if (@newtrack == nil)
 	 	if (@songs.length == 0)
+	 	 #if the user playlist is empty, get a random song
 	 	 @tracks = client.get('/tracks', :limit => 10)
-	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']	
+	 	 puts tracks
+	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 		else 
-		 @newtrack = @songs[0]
+		 @newtrack = @songs[0].url_track<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 		end 
   end
-  #puts @newtrack
+  puts @newtrack
  erb :user
 end
 
@@ -111,8 +134,8 @@ end
 
 post '/addSong' do
   songID = params[:id]
-  #puts params
 	songTrack = client.get('/tracks/'<<songID)
+	#save the following properties to the playlist
 	title = songTrack.title
 	artwork = songTrack.artwork_url
 	artist = songTrack.permalink_url

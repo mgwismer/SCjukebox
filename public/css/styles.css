@@ -120,6 +120,9 @@ body {
 .searchDiv {
   display: none; }
 
+.redfont {
+  color: red; }
+
 .box-add-btn {
   visibility: hidden; }
 
