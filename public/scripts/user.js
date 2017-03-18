@@ -115,6 +115,14 @@ $(document).ready(function(){
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
     });
+    $('.deletepost-div').on('click', function(e) {
+			child = e.target;
+  		var i = 0;
+      //find the index of which card clicked by checking how many siblings before it.
+      while( (child = child.previousSibling) != null )
+          i++;
+      myBoomBox.deleteSongFromPlayList(i);
+  	});
   }
  
     //selects a song from the searchlist form
@@ -167,7 +175,7 @@ $(document).ready(function(){
 		  //data consists of all the song objects
 		  success: function(data) {
 	    	  //create the return search list in javascript
-	    	  myBoomBox.updateSearchList(data);
+	    	  displaySearchResults(data);
 	    },
 	    error: function() {
 	    	console.log("error");
@@ -254,25 +262,6 @@ $(document).ready(function(){
 		  //The buttons should be inside the boombox.
 		  addEventListeners();
   	}
-  	this.updateSearchList = function(songs) {
-  		//remove the old songs form searchlist
-  		this.searchList = songs;
-  		console.log('searchList');
-  		console.log(songs);
-  		console.log(this.playList);
-  		//clearSearchResults();
-  		// for (var i = 0; i < songs.length; i++) {
-  		// 	songID = songs[i].id;
-  		// 	title = songs[i].title;
-  			//no sense in storing these since need to reget the song from sound cloud on backend with song id since I want to keep the api key off the front end as much as possible.
-  			// stream_url = songs[i].stream_url;
-  			// artist = songs[i].permalink;
-  		// 	var song = new Song(songID,title);
-				// this.searchList.push(song);  			
-  		// }
-  		//display the search results on the page
-      displaySearchResults(this.searchList);  
-  	}
 
   	this.removeSongFromSearchList = function(songid) {
   		//stack overflow result for finding the index of the song with the id, songid
@@ -285,7 +274,26 @@ $(document).ready(function(){
   		//redisplay the shortened searchList
   		displaySearchResults(this.searchList);
   	}
+
+    this.deleteSongFromPlayList = function(index) {
+    	//need to delete from the users playlist on the backend and then remake the playlist.
+    	$.ajax({
+			  type: 'POST',
+			  url: '/deleteSong',
+			  dataType: "jsonp",
+			  data: {index: index},
+			  //data consists of all the song objects
+			  success: function(data) {
+		    	  //create the return play list in javascript
+		    	  remakePlaylist(data);
+		    },
+		    error: function() {
+		    	console.log("error");
+		    }
+			}); 
+    }
   }
+
   var myBoomBox = new Boombox();
   myBoomBox.createBoomBox();
 });

@@ -83,17 +83,14 @@ post '/searchcloud', :provides => :json do
 	JSONP @returnTracks
 end
 
+#identifies which of the searched songs are already in users playlist
 def checkInPlayList(tracks)
 	user = User.find(session[:user_id])
 	playlist = user.songs
-	puts playlist[0].songid
-	puts tracks[0].id
 	mySearchObj = {}
 	mySearchArr = []
   tracks.each do |track|
-		mySearchObj = {:title => track.title, :songid => track.id }
-		puts track.id
-		puts playlist.any?{|song| song.songid.to_i == track.id.to_i}
+		mySearchObj = {:title => track.title, :songid => track.id }songid.to_i == track.id.to_i}
 		if playlist.any?{|song| song.songid.to_i == track.id.to_i}
 			mySearchObj[:inPlaylist] = true
 		else 
@@ -118,8 +115,7 @@ get '/user/:id' do
 		 @newtrack = @songs[0].url_track<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 		end 
   end
-  puts @newtrack
- erb :user
+  erb :user
 end
 
 post '/pickSong', :provides => :json do
@@ -130,6 +126,18 @@ post '/pickSong', :provides => :json do
 	playTrack = client.get('/tracks/'<<songID)
 	myHash = {:song => playTrack, :key => ENV['SOUND_CLOUD_API_KEY']}
 	JSONP myHash
+end
+
+post '/deleteSong' do
+	songindex = params[:index]
+  user = User.find(session[:user_id])
+  songid = songs.songid
+  #delete from users playlist
+  user.songs = user.songs - [songs[songindex]]
+  #remove from databas
+  song = Song.find_by(id: songid)
+  song.destroy
+  JSONP user.songs
 end
 
 post '/addSong' do
@@ -143,5 +151,6 @@ post '/addSong' do
 	user_id = session[:user_id]
 	song = Song.new(title: title, artwork: artwork, artist: artist, url_track: url_track, user_id: user_id, songid: songID)
 	song.save
+	#is it necessary to return something
   JSONP songTrack
 end
