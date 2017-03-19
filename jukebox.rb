@@ -90,7 +90,7 @@ def checkInPlayList(tracks)
 	mySearchObj = {}
 	mySearchArr = []
   tracks.each do |track|
-		mySearchObj = {:title => track.title, :songid => track.id }songid.to_i == track.id.to_i}
+		mySearchObj = {:title => track.title, :songid => track.id }
 		if playlist.any?{|song| song.songid.to_i == track.id.to_i}
 			mySearchObj[:inPlaylist] = true
 		else 
@@ -130,12 +130,16 @@ end
 
 post '/deleteSong' do
 	songindex = params[:index]
+	puts params
+	puts "songindex"<<songindex
+	puts session[:user_id]
   user = User.find(session[:user_id])
-  songid = songs.songid
+  songid = user.songs[songindex.to_i].songid
+  puts songid
   #delete from users playlist
-  user.songs = user.songs - [songs[songindex]]
-  #remove from databas
-  song = Song.find_by(id: songid)
+  user.songs = user.songs - [user.songs[songindex.to_i]]
+  #remove from database
+  song = Song.find_by(songid: songid)
   song.destroy
   JSONP user.songs
 end

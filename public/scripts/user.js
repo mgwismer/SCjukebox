@@ -115,7 +115,13 @@ $(document).ready(function(){
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
     });
-    $('.deletepost-div').on('click', function(e) {
+    //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
+    addDeleteEventListeners()
+  }
+   
+   //Called from remakePlaylist function
+   function addDeleteEventListeners(){
+   	$('.deletepost-div').on('click', function(e) {
 			child = e.target;
   		var i = 0;
       //find the index of which card clicked by checking how many siblings before it.
@@ -123,9 +129,8 @@ $(document).ready(function(){
           i++;
       myBoomBox.deleteSongFromPlayList(i);
   	});
-  }
- 
-    //selects a song from the searchlist form
+   }
+   //selects a song from the searchlist form
    function listenToSearch(e) {
   	e.preventDefault();
   	//find the radio button that was clicked
@@ -211,15 +216,46 @@ $(document).ready(function(){
 
   //removes the searched songs from the addSongList form
   function clearSearchResults() {
-  	//$('#searchlist-container').css('display','none');
   	//for some reason $("#addSongList") is not returning the correct element of the form. Need to remove the elements from the form addSongList. songBtn is the name of the input buttons 
   	x = document.getElementsByName("songBtn")[0];
   	console.log(x)
+  	//if the radio buttons exist
   	if (x != undefined) {
+  		//y is the parent node which is a form
 	  	y = x.parentNode;
 	 		while (y.firstChild) {
 	      y.removeChild(y.firstChild);
 			}
+		}
+  }
+
+  function remakePlaylist(songs) {
+  	console.log(songs);
+  	clearPlayList();
+  	x = $('.playlist-container');
+  	for (var i = 0; i < songs.length; i++) {
+      y = $("<div class='song-div row'> </div>");  		
+  		ytitle = $("<div class='title-div col-md-4'></div>");
+  		ytitle.append("<h5>"+songs[i].title+"</h5>");
+  		//div container for the delete button
+  		ybtn = $("<div class='deletepost-div col-md-2'</div>");
+  		//the actual button
+  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'>");
+  		y.append(ytitle);
+  		y.append(ybtn);
+  		y.appendTo(x);
+  	}
+  	addDeleteEventListeners();
+  }
+
+  function clearPlayList() {
+  	removeDiv('playlist-container');
+  }
+ 
+  function removeDiv(divName) {
+  	var x = document.getElementsByClassName(divName)[0];
+  	while (x.firstChild) {
+	    x.removeChild(x.firstChild);
 		}
   }
 
@@ -288,7 +324,7 @@ $(document).ready(function(){
 		    	  remakePlaylist(data);
 		    },
 		    error: function() {
-		    	console.log("error");
+		    	console.log("from playlist error");
 		    }
 			}); 
     }
