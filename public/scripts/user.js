@@ -239,11 +239,11 @@ $(document).ready(function(){
   	for (var i = 0; i < songs.length; i++) {
       y = $("<div class='song-div row'> </div>");  		
   		ytitle = $("<div class='title-div col-md-4'></div>");
-  		ytitle.append("<h5>"+songs[i].title+"</h5>");
+  		ytitle.append("<p>"+songs[i].title+"</p>");
   		//div container for the delete button
   		ybtn = $("<div class='deletepost-div col-md-2'</div>");
   		//the actual button
-  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'>");
+  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'><br>");
   		y.append(ytitle);
   		y.append(ybtn);
   		y.appendTo(x);
@@ -310,7 +310,6 @@ $(document).ready(function(){
   		this.searchList.splice(index,1);
   		//clear the current searchList
   		clearSearchResults();
-  		console.log(this.searchList);
   		//redisplay the shortened searchList
   		displaySearchResults(this.searchList);
   	}

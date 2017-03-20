@@ -49,7 +49,7 @@ end
 
 post '/login' do
 	puts params
-  @user = User.where(email: params['email']).first
+  @user = User.find_by(email: params['email'])
   puts "Hello"
   songs = @user.songs
   if @user && (@user.password == params['password'])

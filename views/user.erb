@@ -34,12 +34,18 @@
     <% if @user.songs != nil %>
       <% @user.songs.each do |song| %>
         <div class="song-div row">
-          <div class="title-div col-md-4">
-            <h5> <%= song.title %></h5>
+          <div class="title-div col-md-5">
+            <p> <%= song.title %></p>
           </div>
           <div class="deletepost-div col-md-2">
             <input type="button" value="delete"
                 class="main-delete-btn"> 
+          </div>
+          <div class="up-buttons col-sm-1">
+            <button class="glyphicon glyphicon-chevron-up"></button>
+          </div>
+          <div class="down-buttons col-sm-1">
+            <button class="glyphicon glyphicon-chevron-down"></button>
           </div>
         </div> 
         <p> <%= song.rating %> </p>
