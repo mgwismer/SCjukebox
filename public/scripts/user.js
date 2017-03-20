@@ -180,6 +180,7 @@ $(document).ready(function(){
 		  //data consists of all the song objects
 		  success: function(data) {
 	    	  //create the return search list in javascript
+	    	  myBoomBox.searchList = data;
 	    	  displaySearchResults(data);
 	    },
 	    error: function() {
@@ -192,6 +193,8 @@ $(document).ready(function(){
   //radio buttons. User can choose to listen to a searched song.
   //click the ADD TO PLAYLIST button to add it to their playlist.
   function displaySearchResults(tracks) {
+  	console.log('in search list')
+  	console.log(tracks);
     //display the search list
   	$('#searchlist-container').css('display','block');
   	//hide the playlist
@@ -302,11 +305,12 @@ $(document).ready(function(){
   	this.removeSongFromSearchList = function(songid) {
   		//stack overflow result for finding the index of the song with the id, songid
 			index = this.searchList.map(function(e) { 
-				return e.id; }).indexOf(songid);
+				return e.songid; }).indexOf(songid);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
   		//clear the current searchList
   		clearSearchResults();
+  		console.log(this.searchList);
   		//redisplay the shortened searchList
   		displaySearchResults(this.searchList);
   	}

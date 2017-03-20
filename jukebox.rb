@@ -51,9 +51,7 @@ post '/login' do
 	puts params
   @user = User.where(email: params['email']).first
   puts "Hello"
-  puts @user
   songs = @user.songs
-  puts songs[0].songid
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
     puts session[:user_id]
@@ -109,7 +107,7 @@ get '/user/:id' do
 	 	if (@songs.length == 0)
 	 	 #if the user playlist is empty, get a random song
 	 	 @tracks = client.get('/tracks', :limit => 10)
-	 	 puts tracks
+	 	 puts @tracks
 	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 		else 
 		 @newtrack = @songs[0].url_track<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
