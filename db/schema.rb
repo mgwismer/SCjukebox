@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170311175049) do
+ActiveRecord::Schema.define(version: 20170321164322) do
 
   create_table "colors", force: :cascade do |t|
     t.string   "boxColor"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20170311175049) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "songid"
+    t.integer  "position"
   end
 
   create_table "users", force: :cascade do |t|
