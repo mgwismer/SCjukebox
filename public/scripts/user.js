@@ -116,17 +116,32 @@ $(document).ready(function(){
       listenToSearch(e);
     });
     //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
-    addDeleteEventListeners()
+    addDeleteEventListeners();
+    addMoveUpEventListeners();
+  }
+
+  function addMoveUpEventListeners() {
+  	//a lot of duplication here with addDeleteEventListeners and addMoveDownEventListeners()
+  	$(".up-buttons").on('click', function(e) {
+  		child = e.target;
+  		var i = 0;
+      while( (child = child.previousSibling) != null ) {
+        i++;  
+      }
+      //need to reorder it on both the back end and the front end. 
+      myBoomBox.moveUpInPlaylist(i);
+  	});
   }
    
    //Called from remakePlaylist function
+   //Note there are multiple deletepost-div divs each one with a button but acting the same as if there was just one div with multiple child buttons.
    function addDeleteEventListeners(){
    	$('.deletepost-div').on('click', function(e) {
 			child = e.target;
   		var i = 0;
       //find the index of which card clicked by checking how many siblings before it.
       while( (child = child.previousSibling) != null )
-          i++;
+        i++;
       myBoomBox.deleteSongFromPlayList(i);
   	});
    }
@@ -232,24 +247,7 @@ $(document).ready(function(){
 		}
   }
 
-  function remakePlaylist(songs) {
-  	console.log(songs);
-  	clearPlayList();
-  	x = $('.playlist-container');
-  	for (var i = 0; i < songs.length; i++) {
-      y = $("<div class='song-div row'> </div>");  		
-  		ytitle = $("<div class='title-div col-md-4'></div>");
-  		ytitle.append("<p>"+songs[i].title+"</p>");
-  		//div container for the delete button
-  		ybtn = $("<div class='deletepost-div col-md-2'</div>");
-  		//the actual button
-  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'><br>");
-  		y.append(ytitle);
-  		y.append(ybtn);
-  		y.appendTo(x);
-  	}
-  	addDeleteEventListeners();
-  }
+  //This function displays the playlist given an array of songs, with delete and arrow buttons.
 
   function clearPlayList() {
   	removeDiv('playlist-container');
@@ -306,6 +304,9 @@ $(document).ready(function(){
   		//stack overflow result for finding the index of the song with the id, songid
 			index = this.searchList.map(function(e) { 
 				return e.songid; }).indexOf(songid);
+			//add this song to the playlist
+			this.playlist.push(this.searchlist[index]);
+			console.log(this.playlist);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
   		//clear the current searchList
@@ -320,16 +321,40 @@ $(document).ready(function(){
 			  type: 'POST',
 			  url: '/deleteSong',
 			  dataType: "jsonp",
+			  //returns the current playlist
 			  data: {index: index},
 			  //data consists of all the song objects
 			  success: function(data) {
 		    	  //create the return play list in javascript
-		    	  remakePlaylist(data);
+		    	  myBoomBox.playList = data;
+		    	  myBoomBox.remakePlaylist();
 		    },
 		    error: function() {
 		    	console.log("from playlist error");
 		    }
 			}); 
+    }
+
+
+
+    this.remakePlaylist = function() {
+	  	console.log(this.playlist);
+	  	songs = this.playlist;
+	  	clearPlayList();
+	  	x = $('.playlist-container');
+	  	for (var i = 0; i < songs.length; i++) {
+	      y = $("<div class='song-div row'> </div>");  		
+	  		ytitle = $("<div class='title-div col-md-4'></div>");
+	  		ytitle.append("<p>"+songs[i].title+"</p>");
+	  		//div container for the delete button
+	  		ybtn = $("<div class='deletepost-div col-md-2'</div>");
+	  		//the actual button
+	  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'><br>");
+	  		y.append(ytitle);
+	  		y.append(ybtn);
+	  		y.appendTo(x);
+	  	}
+	  	addDeleteEventListeners();
     }
   }
 

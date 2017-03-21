@@ -6,6 +6,7 @@ gem 'sinatra-jsonp'
 gem 'rack'
 gem 'soundcloud'
 gem 'rake'
+gem 'acts_as_list'
 
 gem 'activerecord' #is a library
 gem 'sinatra-activerecord'

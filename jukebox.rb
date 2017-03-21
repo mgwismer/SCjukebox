@@ -48,8 +48,8 @@ post '/users/create' do
 end
 
 post '/login' do
-	puts params
-  @user = User.find_by(email: params['email'])
+	puts params["email"]
+  @user = User.find_by(email: params["email"])
   puts "Hello"
   songs = @user.songs
   if @user && (@user.password == params['password'])
@@ -128,12 +128,8 @@ end
 
 post '/deleteSong' do
 	songindex = params[:index]
-	puts params
-	puts "songindex"<<songindex
-	puts session[:user_id]
   user = User.find(session[:user_id])
   songid = user.songs[songindex.to_i].songid
-  puts songid
   #delete from users playlist
   user.songs = user.songs - [user.songs[songindex.to_i]]
   #remove from database
@@ -155,4 +151,12 @@ post '/addSong' do
 	song.save
 	#is it necessary to return something
   JSONP songTrack
+end
+
+post '/moveUpInPlaylist' do
+	songindex = params[:index]
+  user = User.find(session[:user_id])
+  songs = user.songs
+  songs[index-1],songs[index] = songs[index],songs[index-1]
+  JSONP songs
 end
