@@ -48,13 +48,10 @@ post '/users/create' do
 end
 
 post '/login' do
-	puts params["email"]
   @user = User.find_by(email: params["email"])
-  puts "Hello"
-  songs = @user.songs
+  songs = @user.songs.order("position")
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
-    puts session[:user_id]
     flash[:notice] = "You got it, you're so  in"
     redirect "/user/#{session[:user_id]}"
   else 
@@ -102,7 +99,7 @@ end
 get '/user/:id' do
   @user = User.find(params["id"])
   @colors = Color.find_by(user_id: @user.id)
-  @songs = @user.songs
+  @songs = @user.songs.order("position")
   if (@newtrack == nil)
 	 	if (@songs.length == 0)
 	 	 #if the user playlist is empty, get a random song
@@ -117,9 +114,7 @@ get '/user/:id' do
 end
 
 post '/pickSong', :provides => :json do
-	puts session[:user_id]
 	@user = User.find(session[:user_id])
-	puts params
 	songID = params[:id]
 	playTrack = client.get('/tracks/'<<songID)
 	myHash = {:song => playTrack, :key => ENV['SOUND_CLOUD_API_KEY']}
@@ -128,18 +123,23 @@ end
 
 post '/deleteSong' do
 	songindex = params[:index]
+	puts params
+	puts "DELETE"
   user = User.find(session[:user_id])
   songid = user.songs[songindex.to_i].songid
+  puts user.songs
+  puts user.songs.order("position")
   #delete from users playlist
   user.songs = user.songs - [user.songs[songindex.to_i]]
   #remove from database
   song = Song.find_by(songid: songid)
   song.destroy
-  JSONP user.songs
+  JSONP user.songs.order("position")
 end
 
 post '/addSong' do
   songID = params[:id]
+  user = User.find(session[:user_id])
 	songTrack = client.get('/tracks/'<<songID)
 	#save the following properties to the playlist
 	title = songTrack.title
@@ -150,13 +150,16 @@ post '/addSong' do
 	song = Song.new(title: title, artwork: artwork, artist: artist, url_track: url_track, user_id: user_id, songid: songID)
 	song.save
 	#is it necessary to return something
-  JSONP songTrack
+  JSONP user.songs.order("position")
 end
 
 post '/moveUpInPlaylist' do
+	puts "in move up"
+	puts params
 	songindex = params[:index]
   user = User.find(session[:user_id])
-  songs = user.songs
-  songs[index-1],songs[index] = songs[index],songs[index-1]
-  JSONP songs
+  puts user.songs
+  user.songs[songindex.to_i].move_higher
+  puts user.songs.order("position")
+  JSONP user.songs.order("position")
 end

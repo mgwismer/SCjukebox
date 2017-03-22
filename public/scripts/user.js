@@ -102,6 +102,9 @@ $(document).ready(function(){
   	$('.box-playlist-btn').click(function(){
   		$('#searchlist-container').css('display','none');
   		$('.playlist-container').css('display','block');
+  		if( $(".playlist-container").is(':empty') ){
+  			myBoomBox.remakePlaylist();
+  		}
   	});
   	//this button submits the keyword to do the search
 	  $('#searchForm').on('submit', function(e){
@@ -128,6 +131,7 @@ $(document).ready(function(){
       while( (child = child.previousSibling) != null ) {
         i++;  
       }
+      console.log(i);
       //need to reorder it on both the back end and the front end. 
       myBoomBox.moveUpInPlaylist(i);
   	});
@@ -136,12 +140,17 @@ $(document).ready(function(){
    //Called from remakePlaylist function
    //Note there are multiple deletepost-div divs each one with a button but acting the same as if there was just one div with multiple child buttons.
    function addDeleteEventListeners(){
-   	$('.deletepost-div').on('click', function(e) {
-			child = e.target;
+   	$('.playlist-container').on('click', function(e) {
+   		console.log(e);
+   		console.log(e.target);
+			child = e.target.parentNode.parentNode;
+			console.log(child);
+			console.log(child.previousElementSibling);
   		var i = 0;
       //find the index of which card clicked by checking how many siblings before it.
-      while( (child = child.previousSibling) != null )
+      while( (child = child.previousElementSibling) != null )
         i++;
+      console.log("delete index "+i)
       myBoomBox.deleteSongFromPlayList(i);
   	});
    }
@@ -248,7 +257,6 @@ $(document).ready(function(){
   }
 
   //This function displays the playlist given an array of songs, with delete and arrow buttons.
-
   function clearPlayList() {
   	removeDiv('playlist-container');
   }
@@ -270,6 +278,7 @@ $(document).ready(function(){
 		  dataType: "jsonp",
 		  data: {id: songID},
 		  success: function(data) {
+		  	myBoomBox.playList = data;
 		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
 		  	myBoomBox.removeSongFromSearchList(songID);
 		  	console.log('success');
@@ -305,8 +314,8 @@ $(document).ready(function(){
 			index = this.searchList.map(function(e) { 
 				return e.songid; }).indexOf(songid);
 			//add this song to the playlist
-			this.playlist.push(this.searchlist[index]);
-			console.log(this.playlist);
+			this.playList.push(this.searchList[index]);
+			console.log(this.playList);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
   		//clear the current searchList
@@ -335,26 +344,60 @@ $(document).ready(function(){
 			}); 
     }
 
-
+    this.moveUpInPlaylist = function(index) {
+    	//need an ajax call to reorder playlist on the backend, a lot of duplication with deleteSongFromPlaylist, just a different URL.
+    	console.log("before move");
+    	console.log(myBoomBox.playList)
+    	$.ajax({
+			  type: 'POST',
+			  url: '/moveUpInPlaylist',
+			  dataType: "jsonp",
+			  //returns the current playlist
+			  data: {index: index},
+			  //data consists of all the song objects
+			  success: function(data) {
+		    	  //create the return play list in javascript
+		    	  myBoomBox.playList = data;
+		    	  console.log("after move return");
+		    	  console.log(data);
+		    	  myBoomBox.remakePlaylist();
+		    },
+		    error: function() {
+		    	console.log("from playlist error");
+		    }
+			}); 
+    }
 
     this.remakePlaylist = function() {
-	  	console.log(this.playlist);
-	  	songs = this.playlist;
+    	console.log("in remake");
+	  	console.log(this.playList);
+	  	songs = this.playList;
 	  	clearPlayList();
 	  	x = $('.playlist-container');
 	  	for (var i = 0; i < songs.length; i++) {
 	      y = $("<div class='song-div row'> </div>");  		
-	  		ytitle = $("<div class='title-div col-md-4'></div>");
+	  		ytitle = $("<div class='title-div col-md-5'></div>");
 	  		ytitle.append("<p>"+songs[i].title+"</p>");
 	  		//div container for the delete button
 	  		ybtn = $("<div class='deletepost-div col-md-2'</div>");
 	  		//the actual button
-	  		ybtn = ybtn.append("<input type='button' value='delete' class='main-delete-btn'><br>");
+	  		ybtn.append("<input type='button' value='delete' class='main-delete-btn'><br>");
+	  		//div container for the up arrow
+	  		y_uparrow = $("<div class='up-buttons col-sm-1'></div");
+	  		//the actual arrow
+	  		y_uparrow.append("<button class='glyphicon glyphicon-chevron-up'></button>");
+	  		//div container for the up arrow
+	  		y_dnarrow = $("<div class='down-buttons col-sm-1'></div");
+	  		//the actual arrow
+	  		y_dnarrow.append("<button class='glyphicon glyphicon-chevron-down'></button>")
 	  		y.append(ytitle);
 	  		y.append(ybtn);
+	  		y.append(y_uparrow);
+	  		y.append(y_dnarrow);
 	  		y.appendTo(x);
 	  	}
 	  	addDeleteEventListeners();
+	  	addMoveUpEventListeners();
     }
   }
 
