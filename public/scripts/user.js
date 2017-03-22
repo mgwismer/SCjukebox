@@ -406,8 +406,6 @@ $(document).ready(function(){
 	  		y.append(y_dnarrow);
 	  		y.appendTo(x);
 	  	}
-	  	addDeleteEventListeners();
-	  	addMoveUpEventListeners();
     }
   }
 

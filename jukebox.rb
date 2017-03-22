@@ -49,6 +49,8 @@ end
 
 post '/login' do
   @user = User.find_by(email: params["email"])
+  puts "Login"
+  puts @user
   songs = @user.songs.order("position")
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
