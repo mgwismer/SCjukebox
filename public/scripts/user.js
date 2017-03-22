@@ -102,7 +102,7 @@ $(document).ready(function(){
   	$('.box-playlist-btn').click(function(){
   		$('#searchlist-container').css('display','none');
   		$('.playlist-container').css('display','block');
-  		if( $(".playlist-container").is(':empty') ){
+  		if( myBoomBox.changed ){
   			myBoomBox.remakePlaylist();
   		}
   	});
@@ -279,6 +279,8 @@ $(document).ready(function(){
 		  data: {id: songID},
 		  success: function(data) {
 		  	myBoomBox.playList = data;
+		  	console.log("in addCurrentSongToPlaylist");
+		  	console.log(data);
 		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
 		  	myBoomBox.removeSongFromSearchList(songID);
 		  	console.log('success');
@@ -288,6 +290,7 @@ $(document).ready(function(){
 	    	console.log(songID);
 	    }
 		}); 
+		myBoomBox.changed = true;
   }
 
   var Song = function(songID,title,stream_url,artist) {
@@ -301,6 +304,7 @@ $(document).ready(function(){
   var Boombox = function() {
   	this.playList = [];
   	this.searchList = [];
+  	this.changed = false;
   	this.createBoomBox = function() {		
 		  //Here's the jQuery function to string the functions in order.
 		  //Draws the boom box.
@@ -314,7 +318,7 @@ $(document).ready(function(){
 			index = this.searchList.map(function(e) { 
 				return e.songid; }).indexOf(songid);
 			//add this song to the playlist
-			this.playList.push(this.searchList[index]);
+			//this.playList.push(this.searchList[index]);
 			console.log(this.playList);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
@@ -342,6 +346,7 @@ $(document).ready(function(){
 		    	console.log("from playlist error");
 		    }
 			}); 
+			this.changed = true;
     }
 
     this.moveUpInPlaylist = function(index) {
@@ -366,6 +371,7 @@ $(document).ready(function(){
 		    	console.log("from playlist error");
 		    }
 			}); 
+			this.changed = true;
     }
 
     this.remakePlaylist = function() {
