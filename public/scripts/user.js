@@ -125,15 +125,18 @@ $(document).ready(function(){
 
   function addMoveUpEventListeners() {
   	//a lot of duplication here with addDeleteEventListeners and addMoveDownEventListeners()
-  	$(".up-buttons").on('click', function(e) {
-  		child = e.target;
+  	$(".playlist-container").on('click', function(e) {
+  		//finds the song-div element
+  		child = e.target.parentNode.parentNode;
   		var i = 0;
-      while( (child = child.previousSibling) != null ) {
-        i++;  
-      }
+  		if ($(e.target).hasClass("glyphicon-chevron-up")) {
+	      while( (child = child.previousElementSibling) != null ) {
+	        i++;  
+	      }
       console.log(i);
       //need to reorder it on both the back end and the front end. 
       myBoomBox.moveUpInPlaylist(i);
+      }
   	});
   }
    
@@ -141,19 +144,21 @@ $(document).ready(function(){
    //Note there are multiple deletepost-div divs each one with a button but acting the same as if there was just one div with multiple child buttons.
    function addDeleteEventListeners(){
    	$('.playlist-container').on('click', function(e) {
-   		console.log(e);
-   		console.log(e.target);
+   		//finds the song-div element
 			child = e.target.parentNode.parentNode;
-			console.log(child);
-			console.log(child.previousElementSibling);
+			console.log(e.target.className);
+			console.log($(e.target).hasClass("main-delete-btn"));
   		var i = 0;
       //find the index of which card clicked by checking how many siblings before it.
-      while( (child = child.previousElementSibling) != null )
-        i++;
-      console.log("delete index "+i)
-      myBoomBox.deleteSongFromPlayList(i);
+      if ($(e.target).hasClass("main-delete-btn")) {
+	      while( (child = child.previousElementSibling) != null)
+	        i++;
+	      console.log("delete index "+i)
+	      myBoomBox.deleteSongFromPlayList(i);
+   		 }
   	});
    }
+
    //selects a song from the searchlist form
    function listenToSearch(e) {
   	e.preventDefault();
@@ -371,7 +376,6 @@ $(document).ready(function(){
 		    	console.log("from playlist error");
 		    }
 			}); 
-			this.changed = true;
     }
 
     this.remakePlaylist = function() {
