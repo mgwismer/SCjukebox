@@ -121,6 +121,7 @@ $(document).ready(function(){
     //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
     addDeleteEventListeners();
     addMoveUpEventListeners();
+    addMoveDownEventListeners();
   }
 
   function addMoveUpEventListeners() {
@@ -135,25 +136,38 @@ $(document).ready(function(){
 	      }
       console.log(i);
       //need to reorder it on both the back end and the front end. 
-      myBoomBox.moveUpInPlaylist(i);
+      myBoomBox.moveInPlaylist(i, "up");
       }
   	});
   }
    
+  function addMoveDownEventListeners() {
+  	//a lot of duplication here with addDeleteEventListeners and addMoveDownEventListeners()
+  	$(".playlist-container").on('click', function(e) {
+  		//finds the song-div element
+  		child = e.target.parentNode.parentNode;
+  		var i = 0;
+  		if ($(e.target).hasClass("glyphicon-chevron-down")) {
+	      while( (child = child.previousElementSibling) != null ) {
+	        i++;  
+	      }
+      console.log(i);
+      //need to reorder it on both the back end and the front end. 
+      myBoomBox.moveInPlaylist(i, "down");
+      }
+  	});
+  }
    //Called from remakePlaylist function
    //Note there are multiple deletepost-div divs each one with a button but acting the same as if there was just one div with multiple child buttons.
    function addDeleteEventListeners(){
    	$('.playlist-container').on('click', function(e) {
    		//finds the song-div element
 			child = e.target.parentNode.parentNode;
-			console.log(e.target.className);
-			console.log($(e.target).hasClass("main-delete-btn"));
   		var i = 0;
       //find the index of which card clicked by checking how many siblings before it.
       if ($(e.target).hasClass("main-delete-btn")) {
 	      while( (child = child.previousElementSibling) != null)
 	        i++;
-	      console.log("delete index "+i)
 	      myBoomBox.deleteSongFromPlayList(i);
    		 }
   	});
@@ -354,22 +368,19 @@ $(document).ready(function(){
 			this.changed = true;
     }
 
-    this.moveUpInPlaylist = function(index) {
+    this.moveInPlaylist = function(index, direction) {
     	//need an ajax call to reorder playlist on the backend, a lot of duplication with deleteSongFromPlaylist, just a different URL.
-    	console.log("before move");
-    	console.log(myBoomBox.playList)
     	$.ajax({
 			  type: 'POST',
-			  url: '/moveUpInPlaylist',
+			  url: '/moveInPlaylist',
 			  dataType: "jsonp",
 			  //returns the current playlist
-			  data: {index: index},
+			  data: {index: index,
+			         direction: direction},
 			  //data consists of all the song objects
 			  success: function(data) {
 		    	  //create the return play list in javascript
 		    	  myBoomBox.playList = data;
-		    	  console.log("after move return");
-		    	  console.log(data);
 		    	  myBoomBox.remakePlaylist();
 		    },
 		    error: function() {

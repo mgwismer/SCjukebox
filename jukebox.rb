@@ -155,13 +155,17 @@ post '/addSong' do
   JSONP user.songs.order("position")
 end
 
-post '/moveUpInPlaylist' do
-	puts "in move up"
+post '/moveInPlaylist' do
+	puts "in move"
 	puts params
 	songindex = params[:index]
   user = User.find(session[:user_id])
   puts user.songs
-  user.songs[songindex.to_i].move_higher
+  if (params[:direction] == "up")
+    user.songs[songindex.to_i].move_higher
+  else
+  	user.songs[songindex.to_i].move_lower
+  end
   puts user.songs.order("position")
   JSONP user.songs.order("position")
 end
