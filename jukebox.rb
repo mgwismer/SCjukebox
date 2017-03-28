@@ -49,9 +49,6 @@ end
 
 post '/login' do
   @user = User.find_by(email: params["email"])
-  puts "Login"
-  puts @user
-  songs = @user.songs.order("position")
   if @user && (@user.password == params['password'])
     session[:user_id] = @user.id
     flash[:notice] = "You got it, you're so  in"
@@ -102,11 +99,12 @@ get '/user/:id' do
   @user = User.find(params["id"])
   @colors = Color.find_by(user_id: @user.id)
   @songs = @user.songs.order("position")
+  #@key = {:key => ENV['SOUND_CLOUD_API_KEY']}
+  @myHash = {:songs => @songs, :key => ENV['SOUND_CLOUD_API_KEY']}
   if (@newtrack == nil)
 	 	if (@songs.length == 0)
 	 	 #if the user playlist is empty, get a random song
 	 	 @tracks = client.get('/tracks', :limit => 10)
-	 	 puts @tracks
 	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
 		else 
 		 @newtrack = @songs[0].url_track<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
@@ -125,12 +123,8 @@ end
 
 post '/deleteSong' do
 	songindex = params[:index]
-	puts params
-	puts "DELETE"
   user = User.find(session[:user_id])
   songid = user.songs[songindex.to_i].songid
-  puts user.songs
-  puts user.songs.order("position")
   #delete from users playlist
   user.songs = user.songs - [user.songs[songindex.to_i]]
   #remove from database
@@ -156,16 +150,12 @@ post '/addSong' do
 end
 
 post '/moveInPlaylist' do
-	puts "in move"
-	puts params
 	songindex = params[:index]
   user = User.find(session[:user_id])
-  puts user.songs
   if (params[:direction] == "up")
     user.songs[songindex.to_i].move_higher
   else
   	user.songs[songindex.to_i].move_lower
   end
-  puts user.songs.order("position")
   JSONP user.songs.order("position")
 end

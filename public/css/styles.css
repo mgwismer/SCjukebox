@@ -122,12 +122,15 @@ body {
   color: red; }
 
 .box-add-btn {
-  visibility: hidden; }
+  display: none; }
 
 #songID {
   visibility: hidden; }
 
 .playlist-container {
+  display: none; }
+
+.play-song-list {
   display: none; }
 
 .title-div {

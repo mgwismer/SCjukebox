@@ -97,10 +97,13 @@ $(document).ready(function(){
   	$('.box-search-btn').click(function(){
   		currSong.pause();
   		clearSearchResults();
-  		$('.searchDiv').css('display','block');
+  		$('.searchDiv').css('display','block');  
+  		$('.play-song-list').css('display','none');
   	});
   	$('.box-playlist-btn').click(function(){
   		$('#searchlist-container').css('display','none');
+  		$('.box-add-btn').css('display','none');
+  		$('.play-song-list').css('display','block');
   		$('.playlist-container').css('display','block');
   		if( myBoomBox.changed ){
   			myBoomBox.remakePlaylist();
@@ -118,6 +121,9 @@ $(document).ready(function(){
     $('#addSongList').on('submit', function(e){
       listenToSearch(e);
     });
+    $('.play-song-list').on('click', function(){
+    	myBoomBox.playPlaylist();
+    })
     //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
     addDeleteEventListeners();
     addMoveUpEventListeners();
@@ -134,7 +140,6 @@ $(document).ready(function(){
 	      while( (child = child.previousElementSibling) != null ) {
 	        i++;  
 	      }
-      console.log(i);
       //need to reorder it on both the back end and the front end. 
       myBoomBox.moveInPlaylist(i, "up");
       }
@@ -151,7 +156,6 @@ $(document).ready(function(){
 	      while( (child = child.previousElementSibling) != null ) {
 	        i++;  
 	      }
-      console.log(i);
       //need to reorder it on both the back end and the front end. 
       myBoomBox.moveInPlaylist(i, "down");
       }
@@ -190,9 +194,10 @@ $(document).ready(function(){
 	  	  $('#currSongTitle').html(data.song.title);
 	  	  //set the src on the audio for the picked song
     	  $("#currSong-mp3").attr("src",data.song.stream_url+"?client_id="+data.key);
+    	  myBoomBox.key = data.key;
     	  //uncheck the radio button
     	  $('input[name=songBtn]:checked').attr('checked',false);
-    	  $('.box-add-btn').css('visibility','visible');
+    	  $('.box-add-btn').css('display','block');
     	  //used to store the id of the current song. I guess this is where the song id is converted to a string.
     	  $('#songID').text(data.song.id);
         document.getElementById("currSong-mp3").play();
@@ -207,6 +212,8 @@ $(document).ready(function(){
   function searchCloud(e) {
   	//prevents the form from submitting to the controller in the normal way
     e.preventDefault();
+  	$('.box-add-btn').css('display','block');
+  	$('.play-song-list').css('display','none');
     //gets the value from the text box.
     var keyword = $('#inputQuery').val();
     readUsingAJAX(keyword);	
@@ -236,8 +243,6 @@ $(document).ready(function(){
   //radio buttons. User can choose to listen to a searched song.
   //click the ADD TO PLAYLIST button to add it to their playlist.
   function displaySearchResults(tracks) {
-  	console.log('in search list')
-  	console.log(tracks);
     //display the search list
   	$('#searchlist-container').css('display','block');
   	//hide the playlist
@@ -298,18 +303,35 @@ $(document).ready(function(){
 		  data: {id: songID},
 		  success: function(data) {
 		  	myBoomBox.playList = data;
-		  	console.log("in addCurrentSongToPlaylist");
-		  	console.log(data);
 		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
 		  	myBoomBox.removeSongFromSearchList(songID);
 		  	console.log('success');
 	    },
 	    error: function() {
 	    	console.log("error");
-	    	console.log(songID);
 	    }
 		}); 
 		myBoomBox.changed = true;
+  }
+
+  function playNextSong() {
+  	console.log("play next");
+  	console.log(myBoomBox.index);
+  	console.log(myBoomBox.currSong);
+  	if (myBoomBox.index == myBoomBox.playList.length) {
+  		return null;
+  	}
+  	else {
+			myBoomBox.index++;
+		  myBoomBox.currSong.addEventListener('ended', function() {
+	  		console.log('end song '+myBoomBox.index)
+		  	$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
+		  	myBoomBox.currSong.play();
+		  	//myBoomBox.currSong.removeEventListener('ended', function());
+		  	playNextSong();
+  		});
+  	}
+
   }
 
   var Song = function(songID,title,stream_url,artist) {
@@ -321,6 +343,7 @@ $(document).ready(function(){
   }
 
   var Boombox = function() {
+  	this.key = "";
   	this.playList = [];
   	this.searchList = [];
   	this.changed = false;
@@ -328,6 +351,9 @@ $(document).ready(function(){
 		  //Here's the jQuery function to string the functions in order.
 		  //Draws the boom box.
 		  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+		  this.playList = data.songs;
+		  this.key = data.key;
+		  console.log(this.playList)
 		  //The buttons should be inside the boombox.
 		  addEventListeners();
   	}
@@ -389,9 +415,8 @@ $(document).ready(function(){
 			}); 
     }
 
+    //this is called after deleting or adding a song to the playlist
     this.remakePlaylist = function() {
-    	console.log("in remake");
-	  	console.log(this.playList);
 	  	songs = this.playList;
 	  	clearPlayList();
 	  	x = $('.playlist-container');
@@ -417,6 +442,20 @@ $(document).ready(function(){
 	  		y.append(y_dnarrow);
 	  		y.appendTo(x);
 	  	}
+    }
+
+    this.playPlaylist = function() {
+    	// if (!myBoomBox.changed) {
+    	// 	getPlaylistFromDB();
+    	// }
+  	  myBoomBox.currSong = document.getElementById("currSong-mp3");
+			console.log('current song');
+			console.log(this.playList);
+			$("#currSong-mp3").attr("src",this.playList[0].url_track);
+			console.log(myBoomBox.currSong);
+			myBoomBox.currSong.play();
+      this.index = 0;
+      playNextSong();
     }
   }
 

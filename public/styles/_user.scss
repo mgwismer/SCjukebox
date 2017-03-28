@@ -37,7 +37,7 @@
 
 .box-add-btn 
 {
-  visibility: hidden;
+  display: none;
 }
 
 #songID 
@@ -46,6 +46,11 @@
 }
 
 .playlist-container 
+{
+  display: none;
+}
+
+.play-song-list 
 {
   display: none;
 }
