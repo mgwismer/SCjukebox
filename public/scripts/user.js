@@ -315,23 +315,18 @@ $(document).ready(function(){
   }
 
   function playNextSong() {
-  	console.log("play next");
-  	console.log(myBoomBox.index);
-  	console.log(myBoomBox.currSong);
   	if (myBoomBox.index == myBoomBox.playList.length) {
   		return null;
   	}
   	else {
 			myBoomBox.index++;
 		  myBoomBox.currSong.addEventListener('ended', function() {
-	  		console.log('end song '+myBoomBox.index)
 		  	$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
+	  	  $('#currSongTitle').html(myBoomBox.playList[myBoomBox.index].title);
 		  	myBoomBox.currSong.play();
-		  	//myBoomBox.currSong.removeEventListener('ended', function());
 		  	playNextSong();
   		});
   	}
-
   }
 
   var Song = function(songID,title,stream_url,artist) {
@@ -449,10 +444,8 @@ $(document).ready(function(){
     	// 	getPlaylistFromDB();
     	// }
   	  myBoomBox.currSong = document.getElementById("currSong-mp3");
-			console.log('current song');
-			console.log(this.playList);
 			$("#currSong-mp3").attr("src",this.playList[0].url_track);
-			console.log(myBoomBox.currSong);
+	  	$('#currSongTitle').html(myBoomBox.playList[0].title);
 			myBoomBox.currSong.play();
       this.index = 0;
       playNextSong();
