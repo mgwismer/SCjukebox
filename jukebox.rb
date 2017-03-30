@@ -99,17 +99,15 @@ get '/user/:id' do
   @user = User.find(params["id"])
   @colors = Color.find_by(user_id: @user.id)
   @songs = @user.songs.order("position")
-  #@key = {:key => ENV['SOUND_CLOUD_API_KEY']}
   @myHash = {:songs => @songs, :key => ENV['SOUND_CLOUD_API_KEY']}
-  if (@newtrack == nil)
-	 	if (@songs.length == 0)
-	 	 #if the user playlist is empty, get a random song
-	 	 @tracks = client.get('/tracks', :limit => 10)
-	 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-		else 
-		 @newtrack = @songs[0].url_track<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
-		end 
-  end
+  puts @myHash.to_json
+ 	if (@songs.length == 0)
+ 	 #if the user playlist is empty, get a random song
+ 	 @tracks = client.get('/tracks', :limit => 10)
+ 	 @newtrack = @tracks[1].stream_url<<"?client_id="<<ENV['SOUND_CLOUD_API_KEY']
+	else 
+	 @newtrack = @songs[0].url_track
+	end
   erb :user
 end
 

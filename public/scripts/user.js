@@ -88,10 +88,10 @@ $(document).ready(function(){
   function addEventListeners() {
   	var currSong = document.getElementById("currSong-mp3");
   	$('.box-play-btn').click(function() {
-  		currSong.play();
+  		myBoomBox.currSong.play();
   	});
   	$('.box-pause-btn').click(function() {
-  		currSong.pause();
+  		myBoomBox.currSong.pause();
   	});
   	//this button display the search form where user can type in keyword.
   	$('.box-search-btn').click(function(){
@@ -99,6 +99,7 @@ $(document).ready(function(){
   		clearSearchResults();
   		$('.searchDiv').css('display','block');  
   		$('.play-song-list').css('display','none');
+  		$('.playlist-container').css('display','none');
   	});
   	$('.box-playlist-btn').click(function(){
   		$('#searchlist-container').css('display','none');
@@ -122,6 +123,7 @@ $(document).ready(function(){
       listenToSearch(e);
     });
     $('.play-song-list').on('click', function(){
+			console.log(myBoomBox.playList[myBoomBox.index]);	
     	myBoomBox.playPlaylist();
     })
     //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
@@ -314,18 +316,33 @@ $(document).ready(function(){
 		myBoomBox.changed = true;
   }
 
+  function replaceAudioDiv() {
+  	var audioDiv = document.getElementById('audio-div');
+  	audioDiv.removeChild(audioDiv.childNodes[0]);
+  	$("<audio src='' type='audio/mpeg' id='currSong-mp3'></audio>").appendTo(audioDiv);
+  }
+  
   function playNextSong() {
   	if (myBoomBox.index == myBoomBox.playList.length) {
   		return null;
   	}
   	else {
+  		//delete and re-add the audio tag in order to delete eventListener.
+  		replaceAudioDiv()
 			myBoomBox.index++;
-		  myBoomBox.currSong.addEventListener('ended', function() {
-		  	$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
-	  	  $('#currSongTitle').html(myBoomBox.playList[myBoomBox.index].title);
-		  	myBoomBox.currSong.play();
-		  	playNextSong();
-  		});
+  	  myBoomBox.currSong = document.getElementById("currSong-mp3");  	
+			$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
+	  	$('#currSongTitle').html(myBoomBox.playList[myBoomBox.index].title);
+			console.log("in play next");
+			console.log(myBoomBox.index);
+			console.log(myBoomBox.playList[myBoomBox.index]);		
+		  myBoomBox.currSong.play();
+	  	console.log(myBoomBox.currSong);
+	  	setTimeout(function() {
+			  myBoomBox.currSong.addEventListener('ended', function() {
+			  	playNextSong();
+			  });
+		  },3000);
   	}
   }
 
@@ -348,7 +365,9 @@ $(document).ready(function(){
 		  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
 		  this.playList = data.songs;
 		  this.key = data.key;
-		  console.log(this.playList)
+		  console.log("createBoomBox ");
+		  console.log(data.songs);
+			console.log(myBoomBox.playList[0]);	
 		  //The buttons should be inside the boombox.
 		  addEventListeners();
   	}
@@ -357,9 +376,6 @@ $(document).ready(function(){
   		//stack overflow result for finding the index of the song with the id, songid
 			index = this.searchList.map(function(e) { 
 				return e.songid; }).indexOf(songid);
-			//add this song to the playlist
-			//this.playList.push(this.searchList[index]);
-			console.log(this.playList);
 			//remove the song from the search list
   		this.searchList.splice(index,1);
   		//clear the current searchList
@@ -440,16 +456,18 @@ $(document).ready(function(){
     }
 
     this.playPlaylist = function() {
-    	// if (!myBoomBox.changed) {
-    	// 	getPlaylistFromDB();
-    	// }
   	  myBoomBox.currSong = document.getElementById("currSong-mp3");
-			$("#currSong-mp3").attr("src",this.playList[0].url_track);
+  	  console.log("play playList");
+  	  console.log(this.playList[0]);
+			$("#currSong-mp3").attr("src",this.playList[0].url_track+"?client_id="+myBoomBox.key);
 	  	$('#currSongTitle').html(myBoomBox.playList[0].title);
+	  	console.log(myBoomBox.currSong);
 			myBoomBox.currSong.play();
       this.index = 0;
-      playNextSong();
-    }
+		  myBoomBox.currSong.addEventListener('ended', function() {
+		  	playNextSong();
+    	});
+  	}
   }
 
   var myBoomBox = new Boombox();
