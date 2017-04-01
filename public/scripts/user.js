@@ -339,11 +339,11 @@ $(document).ready(function(){
 	  	console.log(document.getElementById("currSong-mp3"));
 	  	document.getElementById("currSong-mp3").play();			  
 	  	document.getElementById("currSong-mp3").addEventListener('ended', function() {
+  			setTimeout(function() {
 		  		document.getElementById("currSong-mp3").pause();
-	  			setTimeout(function() {
 				  playNextSong();
-			  });
-		  },3000);
+		  	},3000);
+			});
   	}
   }
 
