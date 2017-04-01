@@ -91,7 +91,7 @@ $(document).ready(function(){
   		myBoomBox.currSong.play();
   	});
   	$('.box-pause-btn').click(function() {
-  		myBoomBox.currSong.pause();
+	  	document.getElementById("currSong-mp3").pause();
   	});
   	//this button display the search form where user can type in keyword.
   	$('.box-search-btn').click(function(){
@@ -328,19 +328,20 @@ $(document).ready(function(){
   	}
   	else {
   		//delete and re-add the audio tag in order to delete eventListener.
-  		replaceAudioDiv()
+  		replaceAudioDiv();
 			myBoomBox.index++;
-  	  myBoomBox.currSong = document.getElementById("currSong-mp3");  	
+			console.log("in play next");	
 			$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
+	  	console.log(myBoomBox.playList[myBoomBox.index].url_track);
 	  	$('#currSongTitle').html(myBoomBox.playList[myBoomBox.index].title);
-			console.log("in play next");
 			console.log(myBoomBox.index);
 			console.log(myBoomBox.playList[myBoomBox.index]);		
-		  myBoomBox.currSong.play();
-	  	console.log(myBoomBox.currSong);
-	  	setTimeout(function() {
-			  myBoomBox.currSong.addEventListener('ended', function() {
-			  	playNextSong();
+	  	console.log(document.getElementById("currSong-mp3"));
+	  	document.getElementById("currSong-mp3").play();			  
+	  	document.getElementById("currSong-mp3").addEventListener('ended', function() {
+		  		document.getElementById("currSong-mp3").pause();
+	  			setTimeout(function() {
+				  playNextSong();
 			  });
 		  },3000);
   	}
@@ -456,17 +457,18 @@ $(document).ready(function(){
     }
 
     this.playPlaylist = function() {
-  	  myBoomBox.currSong = document.getElementById("currSong-mp3");
-  	  console.log("play playList");
-  	  console.log(this.playList[0]);
-			$("#currSong-mp3").attr("src",this.playList[0].url_track+"?client_id="+myBoomBox.key);
-	  	$('#currSongTitle').html(myBoomBox.playList[0].title);
-	  	console.log(myBoomBox.currSong);
-			myBoomBox.currSong.play();
-      this.index = 0;
-		  myBoomBox.currSong.addEventListener('ended', function() {
+  	//   myBoomBox.currSong = document.getElementById("currSong-mp3");
+  	//   console.log("play playList");
+  	//   console.log(this.playList[0]);
+			// $("#currSong-mp3").attr("src",this.playList[0].url_track+"?client_id="+myBoomBox.key);
+	  // 	$('#currSongTitle').html(myBoomBox.playList[0].title);
+	  // 	console.log(myBoomBox.currSong);
+			// // myBoomBox.currSong.play();
+   //    this.index = 0;
+		  // myBoomBox.currSong.addEventListener('ended', function() {
+		  	this.index = -1;
 		  	playNextSong();
-    	});
+    //	});
   	}
   }
 
