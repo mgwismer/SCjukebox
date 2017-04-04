@@ -296,23 +296,27 @@ $(document).ready(function(){
 
   function addCurrentSongToPlaylist(e) {
   	//this may not be necessary since it is not part of a form
-  	e.preventDefault();	
-  	var songID = parseInt($('#songID').text());
-  	$.ajax({
-		  type: 'POST',
-		  url: '/addSong',
-		  dataType: "jsonp",
-		  data: {id: songID},
-		  success: function(data) {
-		  	myBoomBox.playList = data;
-		  	//if the song is added to the playlist it should be removed from the list of searched for songs.
-		  	myBoomBox.removeSongFromSearchList(songID);
-		  	console.log('success');
-	    },
-	    error: function() {
-	    	console.log("error");
-	    }
-		}); 
+  	if (myBoomBox.playList.length < 25) {
+	  	e.preventDefault();	
+	  	var songID = parseInt($('#songID').text());
+	  	$.ajax({
+			  type: 'POST',
+			  url: '/addSong',
+			  dataType: "jsonp",
+			  data: {id: songID},
+			  success: function(data) {
+			  	myBoomBox.playList = data;
+			  	//if the song is added to the playlist it should be removed from the list of searched for songs.
+			  	myBoomBox.removeSongFromSearchList(songID);
+			  	console.log('success');
+		    },
+		    error: function() {
+		    	console.log("error");
+		    }
+			}); 
+  	}
+  	else 
+  		alert("You have the 25 song playlist limit");
 		myBoomBox.changed = true;
   }
 
@@ -328,15 +332,11 @@ $(document).ready(function(){
   	}
   	else {
   		//delete and re-add the audio tag in order to delete eventListener.
+  		console.log(myBoomBox.playList);
   		replaceAudioDiv();
 			myBoomBox.index++;
-			console.log("in play next");	
 			$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
-	  	console.log(myBoomBox.playList[myBoomBox.index].url_track);
 	  	$('#currSongTitle').html(myBoomBox.playList[myBoomBox.index].title);
-			console.log(myBoomBox.index);
-			console.log(myBoomBox.playList[myBoomBox.index]);		
-	  	console.log(document.getElementById("currSong-mp3"));
 	  	document.getElementById("currSong-mp3").play();			  
 	  	document.getElementById("currSong-mp3").addEventListener('ended', function() {
   			setTimeout(function() {
@@ -366,9 +366,6 @@ $(document).ready(function(){
 		  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
 		  this.playList = data.songs;
 		  this.key = data.key;
-		  console.log("createBoomBox ");
-		  console.log(data.songs);
-			console.log(myBoomBox.playList[0]);	
 		  //The buttons should be inside the boombox.
 		  addEventListeners();
   	}
@@ -419,6 +416,7 @@ $(document).ready(function(){
 			  success: function(data) {
 		    	  //create the return play list in javascript
 		    	  myBoomBox.playList = data;
+		    	  //recreates playlist in DOM
 		    	  myBoomBox.remakePlaylist();
 		    },
 		    error: function() {
@@ -457,18 +455,8 @@ $(document).ready(function(){
     }
 
     this.playPlaylist = function() {
-  	//   myBoomBox.currSong = document.getElementById("currSong-mp3");
-  	//   console.log("play playList");
-  	//   console.log(this.playList[0]);
-			// $("#currSong-mp3").attr("src",this.playList[0].url_track+"?client_id="+myBoomBox.key);
-	  // 	$('#currSongTitle').html(myBoomBox.playList[0].title);
-	  // 	console.log(myBoomBox.currSong);
-			// // myBoomBox.currSong.play();
-   //    this.index = 0;
-		  // myBoomBox.currSong.addEventListener('ended', function() {
 		  	this.index = -1;
 		  	playNextSong();
-    //	});
   	}
   }
 
