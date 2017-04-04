@@ -14,4 +14,4 @@ gem 'sinatra-flash'
 gem 'sinatra-redirect-with-flash'
 
 gem 'pg'
-gem "activerecord-postgresql-adapter"
+gem 'activerecord-postgresql-adapter'
