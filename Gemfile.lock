@@ -62,6 +62,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord
   activerecord-postgresql-adapter
   acts_as_list
   pg
