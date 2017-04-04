@@ -6,17 +6,14 @@ require './models.rb'
 require 'json'
 require 'sinatra/jsonp'
 
-set :database, "sqlite3:test.sqlite3"
+# set :database, "sqlite3:test.sqlite3"
+# app.rb
+#now set in the config/database.yml file
 enable :sessions
 initColor = {boxColor: "000000", bodyColor: "FFFFFF", btnColor: "000000"}
 
-# register a client with YOUR_CLIENT_ID as client_id_
 client = SoundCloud.new(:client_id => ENV['SOUND_CLOUD_API_KEY'])
-# tracks = client.get('/tracks', :limit => 10)
-# # print each link
-# tracks.each do |track|
-#   puts track.permalink_url
-# end
+
 get '/' do 
 	erb :home
 end

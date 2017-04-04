@@ -7,6 +7,8 @@ GEM
       activemodel (= 5.0.1)
       activesupport (= 5.0.1)
       arel (~> 7.0)
+    activerecord-postgresql-adapter (0.0.1)
+      pg
     activesupport (5.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
@@ -61,6 +63,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  activerecord-postgresql-adapter
   acts_as_list
   pg
   rack
