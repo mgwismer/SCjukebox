@@ -6,9 +6,7 @@ require './models.rb'
 require 'json'
 require 'sinatra/jsonp'
 
-# set :database, "sqlite3:test.sqlite3"
-# app.rb
-#now set in the config/database.yml file
+ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://localhost/myapp_development')
 enable :sessions
 initColor = {boxColor: "000000", bodyColor: "FFFFFF", btnColor: "000000"}
 
