@@ -127,7 +127,6 @@ $(document).ready(function(){
       listenToSearch(e);
     });
     $('.play-song-list').on('click', function(){
-			console.log(myBoomBox.playList[myBoomBox.index]);	
     	myBoomBox.playPlaylist();
     })
     //these event listeners are a separate function since they are called everytime user deletes from the playlist. 
@@ -275,7 +274,6 @@ $(document).ready(function(){
   function clearSearchResults() {
   	//for some reason $("#addSongList") is not returning the correct element of the form. Need to remove the elements from the form addSongList. songBtn is the name of the input buttons 
   	x = document.getElementsByName("songBtn")[0];
-  	console.log(x)
   	//if the radio buttons exist
   	if (x != undefined) {
   		//y is the parent node which is a form
@@ -336,7 +334,6 @@ $(document).ready(function(){
   	}
   	else {
   		//delete and re-add the audio tag in order to delete eventListener.
-  		console.log(myBoomBox.playList);
   		replaceAudioDiv();
 			myBoomBox.index++;
 			$("#currSong-mp3").attr("src",myBoomBox.playList[myBoomBox.index].url_track+"?client_id="+myBoomBox.key);
