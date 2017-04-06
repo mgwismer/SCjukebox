@@ -8,10 +8,11 @@
   }
 
   function animate(x1,y1,x2,y2,ratio) {
+    var endpt = 900;
     ratio = ratio || 0;
-    x1 = x1 + ratio*(300-x1);
+    x1 = x1 + ratio*(endpt-x1);
     y1 = 50+50*Math.sin(4*pi*x1/300);
-    x2 = x1 + ratio*(300-x1);
+    x2 = x1 + ratio*(endpt-x1);
     y2 = 50+50*Math.sin(4*pi*x2/300);
     drawLine(x1,y1,x2,y2,ratio);
     if(ratio<1) {
