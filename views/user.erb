@@ -16,7 +16,7 @@
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8" id="boomBoxCont">
-      <canvas id="boomBoxCanvas" width="500" height="500"></canvas>
+      <canvas id="boomBoxCanvas" width="400" height="400"></canvas>
       <div id=songTitleDiv>
         <p id=currSongTitle> </p>
       </div>
@@ -54,25 +54,28 @@
       <% end %>
     <% end %>
   </div>
-  <div id="searchlist-container">
-    <form method="POST" action="/pickSong" id="addSongList">
+  <div id="searchlist-container row">
+    <div class="col-md-2"></div>
+    <form method="POST" action="/pickSong" id="addSongList" class="col-md-5">
     
     </form>
   </div>
-  <div class="row searchDiv">
-    <h4> Search the sound cloud </h4>
-    <form id="searchForm" method="POST" action="/searchcloud">
-      <label for="keyword"> keyword </label>
-      <input type="text" name="keyword" id="inputQuery">
-      <input type="submit" id="searchFormBtn">
-    </form>
+  <div class="searchDiv row">
+    <div class="col-md-4">
+      <h4> Search the sound cloud </h4>
+      <form id="searchForm" method="POST" action="/searchcloud">
+        <label for="keyword"> keyword </label>
+        <input type="text" name="keyword" id="inputQuery">
+        <input type="submit" id="searchFormBtn">
+      </form>
+    </div>
   </div>
-  <div class="remove-cont">
+<!--   <div class="remove-cont">
     <h3>or Remove me </h3>
     <form method="POST" action="/users/<%= @user.id %>/delete">
       <input type="submit" value="I want to be freed from your silly app">
     </form>
-  </div>
+  </div> -->
 </div>
 <script>
   var data = <%= @myHash.to_json %> 

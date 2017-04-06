@@ -13,16 +13,18 @@
 #songTitleDiv 
 {
   position: absolute;
-  width: 100%;
+  width: 250px;
   bottom: 300px;
   left: 70px;
+  border: 4px solid $mainColor;
+  border-radius: 2px;
 }
 
 #controlBtns
 {
   position: absolute;
   width: 100%;
-  bottom: 220px;
+  bottom: 160px;
   left: 50px;
 }
 

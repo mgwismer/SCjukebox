@@ -2,6 +2,10 @@ $(document).ready(function(){
 
   var cvs = document.getElementById("boomBoxCanvas");
   var ctx = cvs.getContext("2d");
+  var startX = 10;
+  var startY = 100;
+  var height = 200;
+  var width = 390;
   //ratio makes the line shorter unless it is one
 	function drawLine(x1,y1,x2,y2,ratio) {
 	  ctx.beginPath();
@@ -97,7 +101,7 @@ $(document).ready(function(){
   	$('.box-search-btn').click(function(){
   		currSong.pause();
   		clearSearchResults();
-  		$('.searchDiv').css('display','block');  
+  		$('.searchDiv').css('display','inline-block');  
   		$('.play-song-list').css('display','none');
   		$('.playlist-container').css('display','none');
   	});
@@ -363,7 +367,7 @@ $(document).ready(function(){
   	this.createBoomBox = function() {		
 		  //Here's the jQuery function to string the functions in order.
 		  //Draws the boom box.
-		  makeBox(10,100,200,450).pipe(makeAntennae).pipe(makeSpeakers);
+		  makeBox(startX,startY,height,width).pipe(makeAntennae).pipe(makeSpeakers);
 		  this.playList = data.songs;
 		  this.key = data.key;
 		  //The buttons should be inside the boombox.
