@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/flash'
-require 'SoundCloud'
+#require 'SoundCloud'
 require './models.rb'
 require 'json'
 require 'sinatra/jsonp'
