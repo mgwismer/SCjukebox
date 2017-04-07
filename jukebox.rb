@@ -16,11 +16,6 @@ get '/' do
 	erb :home
 end
 
-get '/home' do
-	puts "These are my params"
-	puts params.inspect
-end
-
 #goto the sign up page
 get '/signup' do
    erb :signup
@@ -95,7 +90,6 @@ get '/user/:id' do
   @colors = Color.find_by(user_id: @user.id)
   @songs = @user.songs.order("position")
   @myHash = {:songs => @songs, :key => ENV['SOUND_CLOUD_API_KEY']}
-  puts @myHash.to_json
  	if (@songs.length == 0)
  	 #if the user playlist is empty, get a random song
  	 @tracks = client.get('/tracks', :limit => 10)
